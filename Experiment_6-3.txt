@@ -1,0 +1,1768 @@
+﻿
+
+Theory and Practice
+of
+Linux System Administration 
+
+
+
+Lab Projects
+
+Version 1.50
+October 25, 2014
+
+
+David P. Both
+RHCE, Instructor
+
+
+Copyright ©  Millennium Technology Consulting LLC
+Table of Contents
+Introduction	5
+Lab Project 1: Installing Linux	6
+Lab Project 1A. Installing Fedora 15 through 17	6
+Lab Project 1B: Installing CentOS 7.X, Fedora 18 and Above	14
+Lab Project 1C: Installing CentOS 6.x	23
+Lab Project 2. Post Installation	30
+Lab Project 2A: CentOS 6.X and Fedora up through Release 18	30
+Lab Project 2B: CentOS 7, Fedora 19 and above	31
+Lab Project 3. Initial Desktop Login	33
+Lab Project 4. Using Virtual Consoles	34
+Lab Project 5. Using Screen	36
+Lab Project 6. The Command Line Interface (CLI)	38
+Lab Project 7. Using vim	42
+vimtutor	42
+Disabling SELinux	42
+Lab Project 8. Important Linux Commands	43
+Moving around, Viewing, Copying and Creating Files	43
+System Performance and Problem Solving	44
+top	44
+Memory Statistics	45
+System Statistics with sar	45
+The /proc filesystem	46
+I/O Data	46
+lm_sensors	46
+Hard Drive Statistics	47
+The Lazy Admin	47
+Information About Files	48
+Lab Project 9. Using Pipes and Redirection	49
+Basic Standard Pipes	49
+Named Pipes	50
+Lab Project 10. Using Compound Commands	51
+Lab Project 11. Basic Command Line Programming	52
+RPM List	52
+Lab Project 12. Backup with tar	54
+Lab Project 13. The Linux Boot and Startup Process	56
+Lab Project 13A: CentOS 6.X and Fedora up through Release 15	56
+The boot sequence	56
+The Startup sequence	59
+Lab Project 13B: CentOS 7.X and Fedora 16 and Above	59
+The boot sequence	59
+The startup sequence	61
+Lab Project 14. Managing and Using Runlevels	63
+Lab Project 14A: Managing SystemV Init scripts in CentOS	63
+Lab Project 14B: Managing Runlevels with systemd in CentOS 7 and Fedora 17 and above	64
+Managing Units and Services with systemd	65
+Lab Project 15: Using Midnight Commander to Manage Files	66
+Install Midnight Commander	66
+Using Midnight Commander as user student	66
+Using Midnight Commander as root	67
+Lab Project 16. Managing Users	68
+Lab Project 17. Managing Processes	69
+Lab Project 18. Scheduling Tasks	71
+Limiting Access to cron	71
+Scheduling Specific Tasks	71
+One Set of Solutions	72
+Lab Project 19. Adding a New Filesystem Partition	73
+Lab Project 20. Managing Filesystems with LVM	77
+Adding a New Volume Group	77
+Expanding a Volume	78
+Lab Project 21. Exploring and Repairing EXT Filesystems	80
+Exploring EXT Filesystems	80
+Repairing EXT Filesystems	80
+Lab Project 22. Files	82
+Links	82
+Symbolic (soft) Links	82
+Hard Links	83
+Locating Files	84
+Locating files with Several Hard Links	85
+File Information	86
+Lab Project 23: Package Management	87
+RPM	87
+YUM	88
+Adding Repositories	88
+Using YUM to Explore Software	89
+Installing Software from a Repository	90
+Updating All Packages	90
+Lab Project 24: Network Configuration And Management	92
+Hardware	92
+Interface Configuration	92
+Network Configuration and Management	93
+Configuring NTP	93
+Configuring the /etc/hosts file	95
+Using SSH	95
+Creating Public/Private Key Pairs	96
+Lab Project 25: Security	98
+Configuring IPTABLES	98
+sudo	99
+Restrict SSH Remote Root Login	100
+Checking for Rootkits	100
+Lab Project 26: Problem Solving	102
+System Rescue	102
+
+Introduction
+I originally started teaching Linux as part of my regular day jobs over the years. The courses were designed to meet the needs of my employers of the time and were generally well received.
+As time went on, and gaps between W-2 jobs increased, I decided to start my own company and consult on and teach Linux. This course, and the two others I have created as of this writing, are the results of that effort.
+In the late summer of 2013, this course was redesigned to enable the use of CentOS as well as Fedora Linux as the basis for the lab projects. Thus this single course is flexible enough for both distributions and can be used to teach either or both at the same time. 
+The lab projects provide installation instructions for Fedora 15 through 17. It also provides a set of instructions for Fedora 18 and later, which are installed using a completely rewritten Anaconda installer. There are also instructions for installing CentOS 6.X.
+Where there are differences, the lab projects provide instructions and commands for both Fedora and CentOS. 
+Taken from my own experiences accumulated during more than 15 years of using Linux, and developed using my knowledge and experience as a course developer and trainer for both IBM and Red Hat, this class covers the practical aspects of Linux System Administration. It builds upon the foundation of the “Philosophy of Linux” in a way that helps the student understand how and why things are done as they are.
+Lab Project 1:		Installing Linux
+This lab project takes you through the process of preparing for and installing Linux on your student host. Fedora releases 15 through 17 are covered in Lab Project 1A. The Anaconda installer has been completely rewritten starting with Fedora 18. Installation of Fedora 18 and higher is covered in Lab Project 1B. Installation if CentOS is covered in Lab Project 1C.
+A minimal system does not have any type of graphical interface and is an excellent platform for use as a firewall, router, or any type of server such as a web, FTP or email server. It can be used as all of these at the same time. This lab project will install a basic system with the KDE Desktop. Any additional functionality required later in the course will be added as it is needed.
+Regardless of which distribution of Linux used in the classroom, the partitioning for this system will include a single standard EXT4 partition for /boot which cannot be part of a Logical Volume. The rest of the hard drive will be used as a Physical Volume (PV) on which Logical Volumes will be created for the rest of the filesystems. Not all of the PV will be used so that the free space can be used later.
+The default partition type for recent Fedora releases is EXT4, though there have been significant issues with EXT4 in the past. For these lab projects we will use EXT4.
+Lab Project 1A.	Installing Fedora 15 through 17
+This lab project provides instruction on the installation of Fedora releases 15 through 17.
+
+    1. Insert the Fedora Linux installation media provided by the instructor into the DVD drive or USB port of your computer.
+    2. Reboot or turn on the computer.
+    3. You will use the graphical installation because it allows more control over disk partitioning. At the installation Welcome screen, choose “Install a new system or upgrade an existing system” and press the Enter key.
+    4. Use the Tab or the Right Arrow key to move the highlight to the Skip button and press Enter to go directly to the installation and skip over the media check. 
+    5. At the initial Fedora graphical splash screen press Enter or use the mouse to click on the Next button.
+    6. English should be the default language on the language selection screen. If not, select English and click Next.
+    7. The U.S. English Keyboard should be the default. If not, select it and click Next.
+    8. Leave Basic Storage Devices checked and click Next.
+    9. We will not be upgrading any possible existing installation. Choose Fresh Installation and click Next.
+    10. Type the hostname of your student computer. It should be studentXX.linuxclass.com where XX is your two digit student number starting with 01. Your instructor will have assigned you a student number at the beginning of the class. If not, obtain a student number from your instructor now. Do NOT press Enter or click Next!
+    11. There is also a button on this page, Configure Network. Click on this button to see the options available. Click on the em1 entry and then the Edit button. The device in  Illustration 2 is for a pluggable NIC in motherboard slot 2 and a single port. Yours will be “Ethernet Motherboard 1,” or EM1. Place a check in the Connect automatically checkbox. This is supposed to start the network during startup. With a server or desktop installation, if you do not check this box the network will not start until a user logs in to the GUI. Although that could be corrected manually after the installation, now is the best opportunity to make this change.
+    12. Click on the IPV4 Settings tab. Notice that although the default is for DHCP to provide configuration data for the NICs, you can also specify a static IP address and manually enter DNS and gateway server entries. Do not change anything here as we will use DHCP for all lab projects. Your instructor may ask you for your IP address later.
+    13. When you have finished exploring, click Apply on the Editing System eth0 window and then Close on the Network Connections window. 
+    14. Click Next on the Hostname page.
+    15. Select the correct Time Zone for your Location. The default is Eastern/New York. Also remove the check from the System clock uses UTC checkbox. Then click the Next button to continue.
+    16. Enter the root password (use “lockout” with no quotes) in both spaces and click Next. You will receive a message window indicating that this is a weak password. For this class it is fine and the instructor requires that you use it, so click on Use Anyway.
+    17. There are several options on the next screen which asks which type of installation you would like. Choose the Create custom layout option and click Next.
+    18. If there were partitions on the disk they will be shown on the disk Device screen. If there are any existing partitions, remove all of them. If it was Linux partitions, start with the Logical Volumes, then the Volume Group and the Physical Volume, and end with the /boot and other EXT partitions. Your disk should be empty of partitions and look like Illustration 3. If you need help deleting existing partitions be sure to ask the instructor.
+    19. You first need a /boot partition so click on the Create button. Be sure to select Standard Partition as shown in Illustration 4, and click Create. The Add Partition window is displayed. Only the /boot partition needs to be a Standard partition.
+    20. In the Add Partition window select /boot from the Mount Point drop-down. Leave the File System type as EXT4 and the size at the default of 500MB. 500MB is the default size for all partitions in this menu, but it is not the best choice for most partitions. Click on OK to create the /boot partition. 
+    21. Now you need to create a Physical Volume (PV) out of a portion of the remaining disk space to use for the rest of the Logical Volumes. Click on Create, choose LVM Physical Volume. Type 20000 (20,000MB or 20GB) in the Size field and click OK. At least some of the remaining space on the disk will be used later. It does not normally make sense to create multiple PVs on a single physical hard drive, but this enables us to pretend that there are multiple physical hard drives for later lab projects. We will also leave some unused space on the PV for later use. After creating the new Physical Volume, your disk partitioning should look like Illustration 7.
+    22. The next step is to create a Volume Group (VG). Click the Create button and select LVM Volume Group and click Create.
+    23. At this point you have the Make LVM Volume Group and Make Logical Volume windows displayed. You can create all of the needed Logical Volumes within this window. Select / (root) for the Mount Point. Leave the File System Type at EXT4. Type root for the Logical Volume Name and 2000 (2GB) for the Size. Click the OK button when you are finished entering the data. 
+    24. Now create the rest of the required Logical Volumes using Table 1, below. This table shows all of the partitions and Logical Volumes you should have when you are completed including the /boot partition which was previously created, as well as the Physical Volume (PV) and Volume Group (VG). 
+       
+Mount Point
+LVM
+Volume Name
+Filesystem Type
+Size
+/boot
+No
+
+EXT4
+500M
+PV
+
+
+Physical Volume
+20GB
+VG
+
+
+Volume Group
+
+/
+Yes
+root
+EXT4
+5GB
+/usr
+Yes
+usr
+EXT4
+10GB
+/home
+Yes
+home
+EXT4
+2GB
+/tmp
+Yes
+tmp
+EXT4
+2GB
+/var
+Yes
+var
+EXT4
+2GB
+NA
+Yes
+Swap
+Swap
+2GB
+Table 1: Filesystem and Volume mount points and sizes. Note that the Volume Group is sized automatically by the sizes of the defined Logical Volumes. Everything else is left as free space in the Volume Group. All hard drive space on all physical hard drives is included in this one Volume Group.
+       This uses about 23.5 GB of space. I have installed a full version of Fedora on a NetBook computer with the KDE Desktop along with LibréOffice, Thunderbird, Firefox and other application programs in about 8GB of disk space. 
+    25. To create the Swap partition, click Add and select Swap as the File System Type. 
+    26. Your completed Logical Volumes should look like those in Illustration 10. Click on the Next button to complete creation of the disk partitions and Logical Volumes. Then click Write Changes to Disk in the Confirm window. At this time the partitioning layout you have just defined will be created and written to the hard drive, and all of the filesystems will be created. If you are installing on a system that had a running operating system this is the point of no return. Once you have clicked on the Write Changes to Disk button, the contents of the disk will be irretrievably overwritten. This is the “No turning back” point.
+    27. No changes are required to the Boot Loader configuration so click Next.
+    28. The software selection screen allows the choice of four primary software installation options. Choose Graphical Desktop and ensure that the Customize now radio button is selected. Do not change the repository selection. Click Next.
+    29. The software selection menu is displayed as shown in Illustration 11. Select the various desktop environments as shown, especially the KDE Software Compilation. Linux has multiple desktops which users can choose, providing  huge amount of flexibility. 
+    30. Observe while the installation process checks for dependencies, transfers the install image to the hard drive and begins the installation. Notice that there are about 1504 packages being installed for Fedora 15. The minimum number of packages for a minimal Linux system is about 198.
+    31. When you see the “Congratulations, your Fedora installation is complete” screen, remove the installation media and click the Reboot button.
+
+
+Lab Project 1B: Installing CentOS 7.X, Fedora 18 and Above
+This lab project takes you through the process of preparing for and installing Fedora Linux, releases 18 and above. It will usually use the most recent version of Fedora.
+Installation of Fedora 15 through 17 is covered in Lab Project 1A. Installation of CentOS 6.x is covered in Lab Project 1C.
+A minimal system does not have any type of graphical interface and is an excellent platform for use as a firewall, router, or any type of server such as a web, FTP or email server, but we want a bit more than that. This lab project will install a basic system with the KDE Desktop. Any additional functionality required later in the course will be added as it is needed.
+The partitioning for this system will include a single standard EXT4 partition for /boot which cannot be part of a Logical Volume. The rest of the hard drive will be used as a Physical Volume (PV) on which Logical Volumes will be created for the rest of the filesystems. Not all of the PV will be used so that free space can be used later.
+The default partition type for recent Fedora releases is EXT4. That is what will be used for this lab project.
+    1. Insert the Fedora Linux installation media provided by the instructor into the DVD drive or USB port of your computer, as appropriate.
+    2. Reboot or turn on the computer.
+    3. When the Fedora 19 installation menu is displayed, use the Up arrow key to select Install Fedora and press Enter. 
+       
+       You could run the media test by just pressing the Enter key but that should not be necessary.
+    4. On the Fedora 18 and 19 installation Welcome screen, English is already selected as the installation language, but you should check the box at the lower left that is labeled, Set keyboard to default layout for selected language. 
+       Then click the Continue button.
+    5. The main installation menu, titled INSTALLATION SUMMARY is displayed as shown below. This menu is the central hub from which you can select sub-menus to customize the installation.
+       Note the yellow banner across the bottom of the menu and the yellow warning icon next to the Installation destination sub-menu. You will not be able to proceed with the installation until all warnings are eliminated.
+       Most of the sub-menus do not need to be selected for a vanilla installation, for this lab project, we will take some time to look at each. There are a few things you will need to change for this lab project.
+    6. Look at the Date & Time sub-menu. You can click on the desired time zone on the map, or you can select the region and city from the drop-down selection fields.
+       When finished on this menu, press the Done button in the upper left corner.
+    7. The Installation Source sub-menu allows you to choose between the install media from which the system was booted, an ISO file on the hard drive if one is available, or a mirrored repository on the Internet. The most common is the default, from the auto-detected installation media that you booted from. It is not necessary to change anything on this sub-menu for this class.
+    8. You will need to make some selections on the Software Selection sub-menu shown in Illustration 16. Select the KDE Plasma Workspace. For this class, which is not about applications, it is not necessary to select any of the add-on software on the right side of the menu, but in a real-world environment you may wish to install applications like LibréOffice and others.
+       When finished with this sub-menu, click on the Done button.
+    9. The Installation Destination sub-menu in Illustration 17, is the one that will always need some attention. Select this sub-menu and you will see a list of available disks on which you can install Fedora. For this lab only one hard drive is installed in your lab computer so it should already be selected. If other hard drives were available they would be pictured on this page and be available for you to select.
+       Note the checkbox for encrypting the data on the hard drive but do not select it. Press the Done button to configure the partitions.
+    10. At this point you are presented with the screen in Illustration 18, which allows you to select custom partitioning. For many users, if enough free space is available, the default option is fine. 
+       Due to the fact that the hard disk drives on the lab computers have been used before there is little or no available space, or a large portion of the space has been previously partitioned.  So in order to delete all existing partitions you will have to reclaim all of the used space from the disk. 
+       
+       For this lab project, click on the Custom Partitioning button. Select each partition  and click on the Delete button
+    11. The Manual partitioning menu displays existing partitions and allows you to delete them. Illustration 19 shows the existing disk partitions in the expandable list entitled, Fedora Linux 18 for x86_64. Click on that line to expand the list of existing partitions.
+       Click on each partition in the expanded list of partitions and click the Minus (-) sign on the toolbar to delete each existing partition. 
+    12. After deleting the existing partitions click on the Plus sign (+) to create new partitions. First create a /boot partition of 500MB in size as an EXT3 partition. The /boot partition cannot be a logical volume; it must be an EXT3 or EXT4 file system on a standard Linux partition of type 83.
+       Click on the Add mount point button to add the partition to the list. No partitions are actually created until you click on the Finish Partitioning button, but do not do that yet.
+    13. Then click on [+] Customize to expand the menu options. Notice that the device type is a standard partition and not a logical volume. This is normal and correct for the /boot partition because the /boot partition cannot be a logical volume.
+       After changing the File System to EXT3, click on the Apply Changes button to complete configuration of the /boot partition.
+    14. Now create the / (root) partition with a 5GB size as shown in Illustration 22. Click on the Add mount point button to create the entry for the / partition.
+    15. Add the “root” label as shown in Illustration 23, and verify that it is to be formatted as an EXT4 partition. At this point you could change the filesystem to EXT3, BTRFS, or other formats. You can also change the Volume Group in which the partition will be created if there are more than one, or change the name of the existing Volume Group.
+    16. Click on Update Settings to complete configuration of the / (root) partition.
+
+    17. Now create the rest of the required Logical Volumes using the table below using the same steps you did to create the / (root) partition. This table shows all of the partitions and Logical Volumes you should have when you are completed including the /boot partition which was previously created, as well as the Physical Volume (PV) and Volume Group (VG). Note that neither the Physical Volume nor the Volume Group is shown by the manual partitioning menu in the table of partitions on the left. The automatically generated Volume Group name is shown on the drop-down on the right side.
+       Each new mount point you create will appear in the “New Fedora 18/19 Installation” partition list.
+       
+Mount Point
+LVM
+Volume Name
+Filesystem Type
+Size
+/boot
+No
+
+EXT4
+500M
+PV
+
+
+Physical Volume
+automatic
+VG
+
+
+Volume Group
+automatic
+/
+Yes
+root
+EXT4
+5GB
+/usr
+Yes
+usr
+EXT4
+10GB
+/home
+Yes
+home
+EXT4
+2GB
+/tmp
+Yes
+tmp
+EXT4
+2GB
+/var
+Yes
+var
+EXT4
+2GB
+NA
+Yes
+Swap
+Swap
+2GB
+Table 2: Filesystem and Volume mount points and sizes. Note that the Volume Group is automatically created to be the sum of the defined Logical Volumes. Everything else is left as free space and is not part of a partition or Physical Volume.
+       This uses about 23.5 GB of space. I have installed a full version of Fedora on a NetBook computer with the KDE Desktop along with LibréOffice, Thunderbird, Firefox and other application programs in about 8GB of disk space. 
+       Note that the Swap partition does not have a mount point and is a special swap filesystem type.
+    18. When you have completed configuring the partitions, click on the Done button. and then click the Accept Changes button on the SUMMARY OF CHANGES page. The process of partitioning will take place in the background while you continue making additional customization for the installation.
+    19. There is no need to make any changes in the Keyboard sub-menu unless you are setting up a host for a non-English environment. You can take a look at this sub-menu if you like.
+    20. The network to which your student host is attached has a DHCP server and, for now, you do not need to make any changes to the networking configuration. However you should look at this sub-menu to see what it looks like and to verify that the network configuration is as you expect it to be. 
+       Notice in Illustration 24, that the Hostname, IP Address, Subnet Mask, Default Route and Name Servers have all been provided by the classroom DHCP server.
+       The information in this illustration is for the VM used to create this lab project. The data for your student host will be different from but consistent with the details of the classroom environment. The IP Address for your student host should be 192.168.25.2X, where X is your student number. The Name Server will be 192.168.25.1, the instructor's laptop. 
+       When you have finished verifying that the network configuration is correct, click on the Done button to return to the main installation menu. Do not change anything on this menu!
+    21. On the main menu page, Installation Summary, click on the Begin Installation button to begin the actual installation. 
+    22. The installation progress page is displayed and is shown in Illustration 25. At this time you will need to set the root password. Use the password lockout for your root password. It is not necessary to create a user as it can be done later during the post installation phase. For this lab project do not create a new user.
+    23. When the installation has completed, remove the installation medium and click the Reboot button.
+
+
+Lab Project 1C:	Installing CentOS 6.x
+This lab project provides instructions for the installation of CentOS 6.x. Installation of Fedora 15 through 17 is covered in Lab Project 1A. Installation of Fedora 18 and above is covered in Lab Project 1B.
+A minimal system does not have any type of graphical interface and is an excellent platform for use as a firewall, router, or any type of server such as a web, FTP or email server, but we want a bit more than that. This lab project will install a basic system with the KDE Desktop. Any additional functionality required later in the course will be added as it is needed.
+The partitioning for this system will include a single standard EXT4 partition for /boot which cannot be part of a Logical Volume. The rest of the hard drive will be used as a Physical Volume (PV) on which Logical Volumes will be created for the rest of the filesystems. Not all of the PV will be used so that free space can be used later.
+The default partition type for recent CentOS releases is EXT4. That is what will be used for this lab project.
+
+    1. Insert the CentOS Linux installation media provided by the instructor into the DVD drive or USB port of your computer as appropriate.
+    2. Reboot or turn on the computer.
+    3. Although a text mode installation is available, we will use the graphical installation because it allows more control over disk partitioning. Use the arrow keys to highlight "Install or upgrade an existing system" to begin the installation.
+    4. The next screen is Disk Found. This just means that the installation media has been detected. This screen gives you the opportunity to test the installation media for corruption. It is not really necessary to do that during this lab project as the media has already been tested by the instructor. Use the arrow keys to select Skip and then press the Enter key.
+    5. The next screen is a graphical display of the CentOS logo. There is nothing to do on this screen except to use the mouse to click on the Next button.
+    6. The Language screen allows selection of a language to use during the installation process itself. English is the default just click on the Next button to continue.
+    7. The next screen provides choices for the keyboard to be used. The default is U.S. English so once again just click on the Next button to continue.
+    8. The next screen allows you to select the type of storage devices on which to install CentOS. For this lab project use the Basic Storage Devices option, which is the default. Then click on the Next button to continue.
+    9. Verify that the Fresh Installation radio button is selected and click on the Next button.
+    10. Type the hostname of your student computer. It should be studentXX.mtc-llc.net where XX is your two digit student number starting with 01. Your instructor will have assigned you a student number at the beginning of the class. If not, obtain a student number from your instructor now. Do NOT press Enter or click Next!
+    11. There is also a button on this page, Configure Network. Click on this button to see the options available. Click on the eth0 entry and then the Edit button. The device in  Illustration 28 is ETH0, which is the designation for the NIC on the VM on which this lab project was developed. Yours should be ETH0 also, for CentOS on your student host. Place a check in the Connect automatically checkbox. This is supposed to start the network during startup. With a server or desktop installation, if you do not check this box the network will not start until a user logs in to the GUI. Although that could be corrected manually after the installation, now is the best opportunity to make this change.
+    12. Click on the IPV4 Settings tab. Notice that although the default is for DHCP to provide configuration data for the NICs, you can also specify a static IP address and manually enter DNS and gateway server entries. Do not change anything here as we will use DHCP for all lab projects. Your instructor may ask you for your IP address later.
+    13. When you have finished exploring, click Apply on the Editing System eth0 window and then Close on the Network Connections window. 
+    14. Click Next on the Hostname page.
+    15. Select the correct Time Zone for your Location. The default is Eastern/New York. Also remove the check from the System clock uses UTC checkbox. Then click the Next button to continue.
+    16. Enter the root password (use “lockout” with no quotes) in both spaces and click Next. You will receive a message window indicating that this is a weak password. For this class it is fine and the instructor requires that you use it, so click on Use Anyway.
+    17. There are several options on the next screen which asks which type of installation you would like. Choose the Create custom layout option and click Next.
+    18. If there were partitions on the disk they will be shown on the disk Device screen. If there are any existing partitions, remove all of them. If it was Linux partitions, start with the Volume Group and the Physical Volume, and end with the /boot and other EXT partitions. Your disk should be empty of partitions and look like Illustration 29. If you need help deleting existing partitions be sure to ask the instructor.
+    19. You first need a /boot partition so click on the Create button. Be sure to select Standard Partition as shown in Illustration 4, and click Create. The Add Partition window is displayed. Only the /boot partition needs to be a Standard partition.
+    20. In the Add Partition window as shown in Illustration 30, select /boot from the Mount Point drop-down. Leave the File System type as EXT4 and set the size to 500MB. 200MB is the default size for all partitions in this menu, but it is not the best choice for most partitions. Click on OK to create the /boot partition. 
+    21. Now you need to create a Physical Volume (PV) out of a portion of the remaining disk space to use for the rest of the Logical Volumes. Click on Create, choose LVM Physical Volume. Type 30000 (30,000MB or 30GB) in the Size field and click OK. At least some of the remaining space on the disk will be used later. It does not normally make sense to create multiple PVs on a single physical hard drive, but this enables us to simulate that there are multiple physical hard drives for later lab projects. After creating the new Physical Volume, your disk partitioning should look like Illustration 32.
+    22. The next step is to create a Volume Group (VG). Click the Create button and select LVM Volume Group and click Create.
+    23. At this point you have the Make LVM Volume Group and Make Logical Volume windows displayed. You can create all of the needed Logical Volumes within this window. Select / (root) for the Mount Point. Leave the File System Type at EXT4. Type root for the Logical Volume Name and 2000 (2GB) for the Size as shown in Illustration 33. Click the OK button when you are finished entering the data. 
+    24. Now create the rest of the required Logical Volumes using Table 1, below. This table shows all of the partitions and Logical Volumes you should have when you are completed including the /boot partition which was previously created, as well as the Physical Volume (PV) and Volume Group (VG). 
+       
+Mount Point
+LVM
+Volume Name
+Filesystem Type
+Size
+/boot
+No
+
+EXT4
+500M
+PV
+
+
+Physical Volume
+30GB
+VG
+
+
+Volume Group
+30GB
+/
+Yes
+root
+EXT4
+5GB
+/usr
+Yes
+usr
+EXT4
+10GB
+/home
+Yes
+home
+EXT4
+2GB
+/tmp
+Yes
+tmp
+EXT4
+2GB
+/var
+Yes
+var
+EXT4
+2GB
+NA
+Yes
+Swap
+Swap
+2GB
+Table 3: Filesystem and Volume mount points and sizes.  
+       This uses about 23.5 GB of space. It should leave a little less than 7GB of space in the logical Volume and about 446GB free on the hard drive. I have installed a full version of Fedora on a NetBook computer with the KDE Desktop along with LibréOffice, Thunderbird, Firefox and other application programs in about 8GB of disk space. To create the Swap partition, click Add and select Swap as the File System Type. 
+    25. Your completed Logical Volumes should look like those in Illustration 35. 
+       Click on the Next button to complete creation of the disk partitions and Logical Volumes. Then click Write Changes to Disk in the Confirm window. At this time the partitioning layout you have just defined will be created and written to the hard drive, and all of the filesystems will be created. If you are installing on a system that had a running operating system this is the point of no return. Once you have clicked on the Write Changes to Disk button, the contents of the disk will be irretrievably overwritten. This is the “No turning back” point.
+    26. No changes are required to the Boot Loader configuration so click Next.
+    27. The software selection screen allows the choice of eight primary software installation options. Choose Desktop and ensure that the Customize now radio button is selected. Do not change the repository selection. Click Next.
+    28. The software selection menu is displayed. You could select packages and groups to install from among many hundreds, including Gnome and KDE desktops, various server and development options as well as a large number of administrative tools. There are also options to install commercial grade software such as load balancing and high availability. 
+    29. Click on the Desktops selection in the left window pane and you will see a list of desktop software that can be installed in the right pane. Select the KDE Desktop. For this class, which is not about applications, it is not necessary to select any additional software. Additional packages required by the lab projects will be installed later as required.
+    30. Click on the Next button to continue. 
+    31. Observe while the installation process checks for dependencies, transfers the install image to the hard drive and begins the installation. The installation should install 1195 packages for this CentOS configuration.
+    32. When you see the “Congratulations, your CentOS installation is complete” screen, remove the installation media and click the Reboot button.
+       
+Lab Project 2.	Post Installation
+After rebooting immediately following the completion of the installation you are forced through the initial setup sequence. This sequence prompts you to accept the license and allows you to create a single, non-privileged user account to be used for GUI desktop logins. You will create one non-root user now to use during the next Lab Project, and some additional non-privileged users in a later lab project.
+Lab Project 2A:	CentOS 6.X and Fedora up through Release 18
+
+    1. The first screen is the Welcome screen. Click the Forward button.
+    2. Click the Forward button on the License Information screen. Notice that you do not have to scroll through the entire thing to allegedly “read” the GPL before you can continue. A copy of the license is available from the URL on the License Information page.
+    3. Enter the data to create a new user, “student”, with a password of “lockout” on the Create User page. Then click the Forward button. This will be your non-privileged user account.
+    4. Select Synchronize date and time over the network on the Date and Time page. Then click the Forward button. It will take a moment for the time on your local computer to synchronize with the Fedora time servers.
+    5. Fedora: Check the Send Profile radio button on the Hardware Profile page. This sends the profile of your computer hardware and information about the software installation to the Fedora Project. This information is used to create a list of hardware that works well with Fedora.
+       CentOS: The Kdump page allows you to specify parameters for creating dump files if the kernel crashes. Do not change anything on this page.
+    6. Click on the Finish button. CentOS will force a reboot in order to properly start the Kdump service.
+    7. Regardless of whether you are using CentOS or Fedora, the computer will now display the graphical login screen.
+Lab Project 2B:	CentOS 7, Fedora 19 and above
+Fedora 19 uses the same “hub and spoke” structure for the post-installation tasks as the installation does. Currently, the only option is for user creation.
+    1. Click on USER CREATION to create a new user.
+    2. Enter the data for a new user, “student”, in the appropriate locations. 
+       Full Name:	Student
+       Username:	student
+       Password:	lockout
+    3. Click on the Done button to return to the INITIAL SETUP page.
+    4. Click on the FINISH CONFIGURATION button to complete the post-installation configuration.
+    5. The computer will now display the graphical login screen.
+Lab Project 3.	Initial Desktop Login
+The first thing an administrator must do is login to the system. Because the root user cannot login through the GUI login you must either login as root using a virtual console or login as a non-privileged user and the “su” to root. 
+So let's login to the GUI as the user student.
+    1. Click on the user “student” if it is displayed, or type it in the text box. Which you do will depend upon the Display Manager. GNOME Display Manager (GDM) displays a scrollable list of non-privileged users. KDE Display Manager (KDM) does not display a list and requires that you type in the user ID which is more secure.
+    2. Select the KDE Plasma workspace. For Fedora, this choice is in the Session Type menu; for CentOS it is in the configuration bar across the bottom of the screen.
+    3. Enter the password and press the Enter key on the keyboard.
+It will take a few moments for the desktop to initialize for the first time as several configuration files must be created for the user. Future logins will take less time.
+At this point you are logged in to the GUI desktop.
+
+Lab Project 4.	Using Virtual Consoles
+Virtual consoles provide a means to access multiple consoles using a single physical system console, the Keyboard, Video display and Mouse (KVM). This gives administrators more flexibility to perform system maintenance and problem solving. There are some other means for additional flexibility, but Virtual Consoles is always available if you have physical access to the system or directly attached KVM device or some logical KVM extension such as ILO. Other means such as the screen command might not be available in some environments and a GUI will probably not be available on most servers. 
+
+For now you will use one of the virtual consoles to login as root in a text mode only environment. Text mode is where you will do most of your work as a system administrator. You will have an opportunity to use a terminal session in the GUI desktop later, but this is what your system will look like if you do not have a GUI.
+
+    1. Press Ctrl-Alt-F2 to access virtual console 2. 
+    2. If not already logged in, login to the console session 2 as root. Type root on the Login line and press the Enter key. Type in the root password – lockout – and press Enter again. You should now be logged in and at the command prompt as shown in the Illustration above.
+    3. Use Ctrl-Alt-F3 to change to console session three (3). Login on this console as student.
+        1. ID = student
+        2. PW = lockout
+           Note that any user, in this case student, can be logged in multiple times. You should be logged in as student both in the GUI desktop and here in virtual console 3.
+    4. Note the $ symbol prompt which denotes the prompt for a non-root (non-privileged) user.
+    5. Run the ls -la command. Notice the BASH configuration files, .bash_profile, .bash_logout and .bashrc.
+    6. Use the clear command to clear the console screen.
+    7. The reset command resets all console settings. This is useful if the terminal becomes unusable or unreadable, such as after cat’ing a binary file.
+    8. Type w to list currently logged in users and uptime. You should see at least three logins; one for root on tty2 and one for student on tty3 and one for student on tty7, which is the GUI console session. 
+    9. Enter the who command. It provides similar, slightly different information than w.
+    10. Type whoami to display your current login name.
+    11. Type the id command to display your real and effective ID and GID. The id also shows a list of the groups to which your user id belongs.
+    12. Switch back to console session 2.
+    13. Use the whoami and id commands the same as in the other console session. 
+    14. Do not logout of the virtual console sessions.
+Lab Project 5.	Using Screen
+The screen utility allows launching multiple shells in a single terminal session and provides means to navigate between the running shells. It also allows disconnecting the screen session from the terminal session and reconnecting later from the same or a different computer.
+The screen command can be useful in some environments where physical access to a hardware console is not available to provide access to the Virtual Consoles but the flexibility of multiple shells is needed.
+This is an important exercise because through many of the following lab sessions you will find it convenient to use the screen program and in some cases it will be necessary to do so in order to work quickly and efficiently. Unfortunately, the screen command has not been installed as part of the installation, so you will have to do this. There is also another package that needs to be installed, sysstat, so you can also install that now.
+Be sure to su – to root in order to perform this lab project.
+The network interface should have been started but if it has not you will have to start it. 
+Now use the yum command to install the screen and sysstat packages. The sysstat RPM package is being installed now so that it can begin collecting data to be used in a later lab project. The yum command will be discussed in more detail later.
+       yum -y install screen sysstat
+Remember that this is Linux, not Windows, so it is NOT necessary to reboot after installing most software. One of the very few exceptions would be after installing an updated kernel. We will cover the “yum” command, which is used to install remove and update software packages, in more detail later.
+Now to start screen and learn how it works, follow these steps.
+    1. Press Ctrl-Alt-F1  to switch to the GUI desktop if you are not already there.
+    2. Right click on the desktop and select Konsole from the pop-up desktop menu.
+    3. At the CLI type screen which will clear the display and leave you at a command prompt.
+    4. Type command such as ls.
+    5. Type Ctrl-a c to open a new shell within the screen session.
+    6. Enter a different command, such as df –h
+    7. Type Ctrl-a-Ctrl-a to switch between screen shells.
+    8. Enter Ctrl-a c to open a third shell.
+    9. Type Ctrl-a “ to list the open shells. Choose any one by using the up/dn arrow keys and hit the <enter> key to switch to that shell.
+    10. To close one session, type exit and press the Enter key.
+    11. Type the command Ctrl-a “ to verify that the shell is gone.
+    12. To reopen a fresh shell use Ctrl-a c
+    13. Type Ctrl-a “ to verify that the new shell has been created.
+    14. To disconnect from the screen session, press Ctrl-a d
+    15. Enter the command screen –list to list all of the current screen sessions. This can be useful to ensure that you reconnect to the correct screen session if there are multiple ones.
+    16. Type screen –r to reconnect to the active screen session. If multiple active screen sessions are open, then a list of them will be displayed and you can choose the one to which you wish to connect.
+
+Lab Project 6.	The Command Line Interface (CLI)
+The Command Line Interface (CLI) is the primary user interface for System Administrators on most Linux systems. This may be because there is no GUI Desktop installed or because you are working remotely and a text mode CLI is much faster than using any GUI remotely. It can also be due to the fact that you are, in fact, using the GUI and want to use a text mode terminal session on the desktop; this is a very powerful way to work.
+This Lab Project introduces you to working with the CLI through a few very basic commands. It also expands upon the use of Virtual Consoles and shows you how to identify who is logged on in each session as well as how to identify screen sessions. 
+    1. Press Ctrl-Alt-F1  to switch to the GUI desktop if you are not already there.
+    2. If a konsole session is not already started, right click on the desktop and select Konsole from the pop-up desktop menu.
+    3. Because you had to login to the GUI as the user, student, the Konsole terminal session is open as the student user. You must switch users to the root user in the terminal session in order to perform the rest of the tasks in this lab project. Type su - and press the Enter key. Be sure to use the (-) after the command. When prompted, enter the root password and press Enter.
+    4. Note the # symbol for the root prompt.
+    5. Type date to display the date.
+    6. Type Date to see the error when a command is incorrect. The date command is all lowercase as are almost all Linux commands. Using uppercase results in a “command not found” error message.
+    7. We will discuss adding new users from the command line in a later session, but for now, create a new user, student2, with the command:
+       useradd -c “Student 2” student2
+    8. Now set the password for the new student2 user. Use lockout for the new password. Note that the password will not display when you type it in.
+       passwd student2
+       Changing password for user student2.
+       New password: 
+       BAD PASSWORD: it is based on a dictionary word
+       BAD PASSWORD: is too simple
+       Retype new password: 
+       passwd: all authentication tokens updated successfully.
+    9. Type Ctrl-Alt-F4 to open another tty session.
+    10. Login as student2.
+    11. Note the $ symbol for a non-root prompt.
+    12. Return to the Desktop.
+    13. In the root Konsole session, enter the who command to list all logged in users. Note that root is logged in on tty2 and has a couple screen sessions open in that tty, and student2 is logged in on tty3. You may also be logged in as student on a different tty.
+[root@student01 ~]# who
+root     tty2         2013-08-26 15:54
+student  tty3         2013-08-26 15:58
+student2 tty4         2013-08-26 19:53
+student  tty7         2013-08-26 08:35 (:0)
+student  pts/0        2013-08-26 08:35 (:0)
+root     pts/2        2013-08-26 18:31 (david1:S.0)
+root     pts/3        2013-08-26 18:33 (david1:S.1)
+root     pts/4        2013-08-26 18:33 (david1:S.2)
+root     pts/5        2013-08-26 18:33 (david1:S.3)
+student  pts/6        2013-08-26 18:39 (:0)
+[root@student01 ~]# 
+
+If one of your login sessions still has screen sessions running the output will look like lines 6 through 9 in the sample above. This output shows that there is one screen session running with a root login on tty2. The user student is logged in on tty3 and tty4. The pts stands for Pseudo Terminal Session. The four lines of the above output that end with (david1:S.0) and so on, show that root is logged in from a remote host with the hostname david1, probably through a Secure Shell (SSH) session.
+    14. Enter the w command which provides additional information such as the amount of CPU time used by each login and the command being run.
+    15. Enter the cd (Change Directory) command with no arguments or options to ensure that you are in root's home directory. Use the pwd (Present Working Directory) command to verify that you are currently in /root. 
+    16. Copy the install.log file so that we can use it to do some file manipulation 
+       cp install.log testfile.txt
+    17. Type ls to list the files in root's home directory and verify that testfile.txt exists.
+    18. Enter the ls -la command to see a long listing of all files, including “hidden” ones.
+    19. Remove the new file with the rm testfile.txt command. Notice that as root you are asked if you really want to do this; this is a safety feature intended to prevent root from accidentally deleting files, especially important ones. Type y and press the Enter key.
+    20. Now recopy the install.log file to testfile.txt. Remember that you can use the up-arrow key to scroll up to the previously issued copy (cp) command and just press the Enter key to execute it.
+    21. Type clear to clear the terminal screen.
+    22. Enter the dmesg command. Notice that the there is a great deal of information that scrolls off the top of the screen. You will find out how to prevent that in a future Lab Project. 
+    23. Enter the command dmesg > dmesg.txt which redirects the output of the dmesg command to the file dmesg.txt which will be created by this command.
+    24. Enter the ls -l command and look at the size of your newly created file. 
+    25. Copy the file using the cp dmesg.txt dmesg1.txt command.
+    26. Copy the file two times using up arrow and command line editing to produce the commands below.
+       cp dmesg.txt dmesg2.txt
+       cp dmesg.txt dmesg3.txt
+    27. Now create an empty new file.
+       touch newfile.txt 
+    28. Use the ls -l command to see that you have copied and created these files. Your results should look similar to this:
+       [root@instructor ~]# ls -l
+total 300
+-rw-------. 1 root root  1892 Jun  9  2011 anaconda-ks.cfg
+-rw-r--r--. 1 root root 35691 Jun  9 15:35 dmesg1.txt
+-rw-r--r--. 1 root root 35691 Jun  9 15:35 dmesg2.txt
+-rw-r--r--. 1 root root 35691 Jun  9 15:35 dmesg3.txt
+-rw-r--r--. 1 root root 35691 Jun  9 15:34 dmesg.txt
+-rw-r--r--. 1 root root 65780 Jun  9  2011 install.log
+-rw-r--r--. 1 root root 10646 Jun  9  2011 install.log.syslog
+-rw-r--r--. 1 root root     0 Jun  9 15:35 newfile.txt
+-rw-r--r--. 1 root root 65780 Jun  9 15:31 testfile.txt
+[root@instructor ~]#
+    29. Use ls -l dmesg* to only show the files that start with “dmesg”.
+    30. Enter the command ls -l *[13].txt and see what happens.
+    31. Enter the command ls -l * and see the difference.
+    32. Delete one of the files you just created with the rm dmesg1.txt command. 
+    33. Type the command echo don’t do this to see the result. Note that the single quote opens a quoted string so that the shell waits for a second single quote to close the string.
+    34. Press Ctrl-C to cancel the command and return to the prompt.
+    35. Now type echo “Don’t do this” and it should work. 
+    36. Now do the same thing but put double quotes around the single quote instead of around the entire streng to be displayed. echo Don”’”t do this
+    37. Yet another way to do this is to type echo Don\’t do this which produces the same result. The backslash (\) “escapes” the character and tells the shell to interpret it as a literal character rather than as shell syntactical punctuation.
+    38. Enter echo $MYVAR to display the value of the shell variable MYVAR. This should be null as the variable has not been set.
+    39. Enter MYVAR=”This is my variable”
+    40. Now enter echo $MYVAR to display the value of this shell variable. The result should be “This is my variable”.
+    41. Enter the command man bash to look at the information for the shell. You should see the Man Page entry for the BASH shell. Scroll though this entry for a few moments using the up and down arrow keys and the Page-Up and Page-Down keys. 
+    42. While still viewing the BASH man page, press the 1 key and then G (capital G) to go to line 1. You can type the number of any line and then G to go to that line number.
+    43. Use /list to search for the first occurrence of the term “list”. Type n to search for the next occurrence. 
+    44. Enter q to quit the man page for BASH. 
+    45. Use the man man command to read the man page for the man command. Practice moving around and searching the man page for the man command.
+
+Lab Project 7. 	Using vim
+The vi editor, vim in Fedora and other Red Hat based distributions, is one of the most powerful tools a System Administrator can have in their toolbox. There are other editors, such as Emacs, and many flame wars have been fought over which is better. I suggest learning vi or vim because it is always present in all releases and distributions of Linux down to the very most minimal installation. It is also the most readily available editor in other Unixes as well. No other editor is so ubiquitous.
+vimtutor
+    1. Login and su – to root if not already there.
+    2. Install the vim-enhanced package: yum -y install vim-enhanced
+    3. At the CLI type the command vimtutor 
+    4. The file itself is the tutorial. Read it and follow the directions it gives.
+If you have any questions about this lab project please ask the instructor. Your ability to use vim or vi is key to some of the following lab projects.
+Disabling SELinux
+SELinux is a security protocol created by the NSA to prevent crackers from making changes to a  Linux computer even if they have gained access. Due to some problems that this causes with some future lab projects, you must disable SELinux.
+Use vim to set SELinux to “disabled” in the /etc/selinux/config file. When you have saved the modified SELinux configuration file, reboot your student host. This is one of the very few times that a reboot is required to effect the desired changes to the configuration. It will take several minutes during the reboot while SELinux relabels the targeted files and directories. Labeling is the process of assigning a security context to a process or a file. The system will reboot again at end of the relabel process.
+Lab Project 8.	Important Linux Commands
+The most basic Linux commands are those that allow you to determine and change your current location in the directory structure, create manage and look at files, view various aspects of system status, manipulate streams of text data and more. This Lab Project will introduce you to a few basic commands that enable you to do all of these things. 
+This lab project also covers some advanced commands that are frequently used during the process of problem determination. 
+Most of the commands covered in this lab project have many options, some of which can be quite esoteric. This lab project is neither meant to cover all of the Linux commands available (there are several hundred) nor is it intended to cover all of the options on any of these commands. It is meant only as an introduction to these commands and their uses.
+Three of the commands you will explore, sar, vmstat and iostat, were installed earlier when you installed the sysstat RPM. Doing so earlier has allowed some time for the SAR package to collect data that can be used later in this lab project.
+Moving around, Viewing, Copying and Creating Files
+    1. You should already be logged in to your Linux computer as the user student in the GUI and have a Konsole session open. The current tab of your Konsole session should be su'd to root. If not, use the command su – to do so. Don't forget to use the “-” when you issue the command.
+    2. Open a new tab by selecting File from the Konsole Menu Bar and select New Tab from the drop down menu. The new tab will become the active one and it is logged in as the user student. An alternate and easy way to open a new tab in Konsole is to double-click the empty space next to an existing tab. 
+    3. Use the hostname command to determine the name of the host computer. You can also change the host name of your computer using this command when logged in as root.
+    4. Enter pwd to determine the present working directory (PWD). It should be /home/student.
+    5. If the PWD is not your home directory, change to your home directory using the cd command without any options or arguments.
+    6. Let's create some new files like you did as root in an earlier project. Use the following commands to do this. 
+       touch newfile.txt
+       dmesg > dmesg.txt
+       cp dmesg.txt dmesg1.txt
+       cp dmesg.txt dmesg2.txt
+       cp dmesg.txt dmesg3.txt
+       
+    7. Use the command ls -lah to display a long list of all files in your home directory and display their sizes in human readable format. Note that the time displayed on each file is the mtime which is the time the file or directory was last modified. There are a number of “hidden” files that have a dot (.) as the first character of their names. Use ls –lh if you don't need to see all of the hidden files.
+    8. The touch dmesg2.txt changes all of the times for that file.
+    9. Enter the commands ls -lc and ls -lu to view the ctime (time the inode last changed) and atime (time the file was last accessed – used or the contents viewed), respectively. 
+    10. Enter the command cat dmesg1.txt but don't worry about the fact that the data spews off the screen. Now use the commands ls -l,  ls -lc  and ls -lu to again view the dates and times of the files and notice that the file dmesg1.txt has had its atime changed. The atime of a file is the time that it was last accessed for reading by some program. Note that the ctime has also changed. Why? If you don't figure this out now, it will be covered later so no worries.
+    11. Enter stat dmesg1.txt to display a complete set of information about this file, including its [acm]times, its size, permissions, the number of disk data blocks assigned to it, its ownership and even its inode number. We will cover inodes in detail in a later session.
+       Notice that the files timestamps are in microseconds. This is a recent change since Fedora 14. The reason for this is that the previous granularity of timestamps in full seconds was not fine enough to deal with high speed, high volume transaction based environments in which transaction timing sequence is important.
+    12. Move the file dmesg3.txt to the /tmp directory with the mv dmesg3.txt /tmp command. Use the ls command in both the current directory and the /tmp directory to verify that the file has been moved. 
+    13. Enter the command rm /tmp/dmesg3.txt to delete the file and use the ls command to verify that it has been deleted. 
+
+System Performance and Problem Solving
+Now let's try some commands that enable you to observe various configuration and performance aspects of your Linux system. You will have the opportunity to explore these commands and more in perhaps excruciating detail later, but for now this is just a brief glimpse of the information available to you. Be sure to use the man pages for each command if you have questions about interpreting the data displayed.
+There are a large number of Linux commands that are used in the process of analyzing system performance and problem determination. Most of these commands obtain their information from various files in the /proc filesystem. You may wish to use multiple terminal sessions side-by-side in order to make some of the comparisons between commands and their output.
+top
+Start the top command. Set the refresh delay to 1 second. Observe the output for a few minutes. 
+Can you set the delay to sub-second, such as .2 or .5 seconds?_______________
+Reset the delay to 1 second.
+What are the load averages?__________________________________________
+How much memory and swap space are free?____________________________
+What is the default sort column?_______________________________________
+
+Change the default sort column first to PID and then to TIME+.
+What does the TIME+ value tell you?____________________________________________
+__________________________________________________________________________
+Which task is getting the most accumulated time?  PID_________ Name________________
+Which task is taking the most RAM? PID________ Name___________ RAM Used_______
+Memory Statistics
+The top command displays, among many other things, the memory statistics for your system. There are other ways to do that as well.
+Use the free command to display the system memory. 
+Does it agree fairly closely with the output from top?_____________________
+How much RAM is installed in the system?____________________________
+How much RAM is in use?______________ How much is free?____________
+
+The vmstat command shows the virtual memory statistics including some of the data shown in top and other utilities. The data output form this command may need more explanation than some of the others so use the man page to interpret it if you need to.
+Do these agree reasonably closely with the output from top?_______________
+System Statistics with sar
+The sar command is one of my favorites when it comes to resolving problems. SAR stands for System Activity Reporter. The output from the sar command can be very extensive, or you can choose to limit the data displayed. For example, issue the sar command with no options. You should only see the CPU data for today (starting from about 10 minutes after you installed the sysstat RPM earlier in this lab project. Remember that the SAR data is collected in 10 minute averages. Smaller time intervals are possible if you need greater granularity for problem determination purposes.
+On the other hand, using the sar -A command shows all of the data that has been collected for today. Issue the sar -A | less command now and page through the output to view the many types of data collected by SAR, including disk and network usage, CPU context switches (how many times per second the CPU switched from one program to another), page swaps, memory and swap space usage and much more. Use the man page for the sar command to interpret the results and to get an idea of the many options available.
+I typically use the sar -A command because many of the types of data available are interrelated and sometimes I find something that gives me a clue to a performance problem in a section of the output that I might not have looked at otherwise.
+The /proc filesystem
+All of the data displayed by the commands so far in this section are stored by the kernel in the /proc filesystem. Because the kernel already stores this data in an easily accessible location and format, it is possible for other programs to access it with no impact upon the performance of the kernel.
+Enter the following commands to view some of the raw data from the /proc filesystem. 
+cat /proc/meminfo
+cat /proc/cpuinfo
+cat /proc/loadavg
+These are just a few of the files in /proc that contain incredibly useful information. 
+I/O Data
+Enter iostat to view cumulative disk input/output statistics. The sda device is the main, physical hard drive. Other devices displayed represent the other partitions and Logical Volumes on the hard drive. It also displays the CPU usage information as shown in top.
+The iostat command also has many options so refer to the man page for information on these options and how to interpret the results.
+lm_sensors
+In some environments, external temperatures can be hazardous for a computer. There are a number of temperature, fan speeds, voltages and other sensors packed into CPUs, hard drives, various chip sets and locations on the motherboard. The lm_sensors package reads the values of these and prints it in a more or less intelligible report. Note that the data points returned will vary significantly depending upon the motherboard and chipsets in the computer. Some older or very new chipsets may not report data correctly.
+Verify that the lm_sensors and acpi packages are installed. If they are not install them using the command below.
+yum -y install lm_sensors acpi
+It is necessary to configure the lm_sensors package before useful data can be obtained. Unfortunately this is a highly interactive process, but you can usually just press the Enter key to take all of the defaults. Run the command sensors-detect to start the configuration process.
+Run the command sensors -f to obtain all available sensor data. Note that the -f option produces output temperatures in Fahrenheit; otherwise output is in Celsius. 
+Hard Drive Statistics
+Hard drives are one of the most common failure points in computers, right after fans. They have moving parts and those are always more prone to failure than electronic integrated circuit chips. Knowing in advance that a hard drive is likely to fail soon can save much time and aggravation.
+The smartctl command is used to access the data and statistics available from SMART-enabled hard drives. Most hard drives are SMART-enabled these days, but not all, especially very old drives.
+First use the fdisk command below to verify the device name of your hard drive.
+fdisk -l
+Use the command below to print all SMART data and pipe it through the less filter. This assumes that your hard drive is /dev/sda, which it probably is in the lab environment.
+smartctl -a /dev/sda | less
+Be sure to peruse the data available in order to familiarize yourself with it. I also like the -x option instead of -a, as it can provide some interesting additional information including a temperature bar chart for the drive.
+smartctl -x /dev/sda | less
+What is the current temperature of your hard drive?_____________
+How many total hours has it been powered on?___________
+The Lazy Admin
+Now here is some help for long complex commands. Type 
+fdisk -u=cylinders -l /dev/sda 
+to use fdisk to list the partitions sda device. Do not use /dev/sdax for a specific partition; you want the whole drive. Notice that the partition and free space sizes are given in blocks. I like using cylinders as I think they are easier to read than blocks and the default used to be in cylinders, but like many other things in Linux, the fdisk command is evolving. So create an alias to make it easier to use. An alias substitutes a command for the one you typed in. In this case add the option -u=cylinders to the command so you don't have to type it every time. 
+alias fdisk='fdisk -u=cylinders'
+Now you can simply type fdisk -l /dev/sda to get the same result as the original fdisk command. You will use this command in a later lab project and you will need to use cylinders. You can add this line to your ~/.bashrc file to make it permanent between reboots and logout/in. You can see some other aliases that were added as commands in your ~/.bashrc file.
+This alias can result in less typing. Good admins are lazy admins and less typing is good for lazy admins. Type the alias command without any parameters to list all of the aliases currently in effect. 
+Information About Files
+Some commands allow you to discover information about files and other commands. 
+Enter the command which fdisk which returns the location of the executable file, fdisk, that would be run if you issued the command without a path. If this is not the version of the command you want, you can use the type command as shown below, to locate all of the executables, and then use the absolute path to the one you want to use. 
+Use the alias command to list all of the current aliases. This should show you the alias for fdisk that was created in the previous section.
+The command whereis fdisk displays all of the files for the fdisk command. This usually is the executable itself and the man page. It does not include libraries, directories, or other files that may simply contain the string “fdisk” as would be returned from the locate fdisk command.
+Enter the command type fdisk to display the executable as in the which command, above.  However, the type -a fdisk command shows both the executable and any aliases for the fdisk command. If there are multiple versions of fdisk on your system, it will show all of them but the which command will only show the one that would be executed if you issue the command.
+Type the commands below.
+type -a ls
+type -a type
+
+Lab Project 9.	Using Pipes and Redirection
+Piping the output of commands or the contents of files through various Linux filter programs enables an administrator or user to very quickly search through massive amounts of data to locate only that in which you are interested. Redirection allows you to redirect the output of a command or a chain of piped commands to a file.
+Basic Standard Pipes
+Creating lengthy pipelines of commands is easily accomplished by building up the individual commands, ensuring that the result is what you want at each stage. In this case we want to count the number of files that end in “conf” in /etc and all subdirectories; these are usually configuration  files.
+This Lab Project must be performed as root.
+    1. Change to the /etc directory and enter ls -l *conf  and observe the output. Notice that the expansion of the * file glob results in not only a list of the files ending with “conf” in /etc, but also a list of all files in directories that end with “conf”.
+    2. Enter the command ls -l  | grep conf  to view all files in /etc/ that contain the string “conf”. You might also need to pipe the output of that command through the “less” filter to be able to scroll through it all.
+    3. Actually that does not exactly do what we want either. Configuration files usually end with “.conf” so we need to specify that the “.conf” is at the end of the file name 
+       ls -l | grep conf$ like so. The $ sign specifies the end of a line.
+    4. Notice that one of the files, grub.conf, is a link. You can tell by the “l” as the leftmost character in the output for that line, and the pointer “->” . We will look at links in much more detail later. So we don't really want this link in our output. Use the command 
+       ls -l | grep conf$ | grep -v ^l where the “^l” matches an “l” at the beginning of the line and the -v parameter in the grep command indicates logical “not”; the result is we display every line that does NOT contain an “l” at the beginning of the line. Remember, this is after we have already filtered so that only lines ending with “conf” were displayed.
+    5. There are also configuration files in subdirectories, so add the -R (Recursive) option to the initial ls command, like this, ls -lR | grep conf$  to see all configuration files in all subdirectories as well as the PWD of /etc.
+    6. Now pipe the results through the wc command, like this,  
+       ls -lR | grep conf$ | wc -l to count the lines of output which gives us the number of configuration files in /etc and all of its subdirectories. I get 365 configuration files on the system I used to write this lab project. How many do you get?
+        ______________________________
+Named Pipes
+Named pipes can be used for any number of purposes. They can provide inter-process communication between scripts and other executable programs, as well as a place to store output data for later use by other programs.
+This section can be performed as root or a non-root user.
+Create a named pipe called mypipe in your home directory. 
+mkfifo mypipe
+Do a long listing of the contents of your home directory and look at the entry for mypipe. It should have a “p” as the file type in the first column to indicate that it is a pipe. Use any command of your choosing and redirect the output to the named pipe. In the example below I use the ifconfig command.
+ifconfig > mypipe
+Notice that you do not get returned to the command prompt; you are left with a blank line. Do not press Ctrl-C to return to the command prompt.
+In another terminal session, use the cat command to read the data from the named pipe. 
+[root@vtest1 ~]# cat mypipe
+lo        Link encap:Local Loopback
+          inet addr:127.0.0.1  Mask:255.0.0.0
+          inet6 addr: ::1/128 Scope:Host
+          UP LOOPBACK RUNNING  MTU:16436  Metric:1
+          RX packets:10 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:10 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0
+          RX bytes:1204 (1.1 KiB)  TX bytes:1204 (1.1 KiB)
+
+p2p1      Link encap:Ethernet  HWaddr 08:00:27:B1:57:34
+          inet addr:192.168.0.101  Bcast:192.168.0.255  Mask:255.255.255.0
+          inet6 addr: fe80::a00:27ff:feb1:5734/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:853 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:680 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:87246 (85.2 KiB)  TX bytes:83843 (81.8 KiB)
+
+Note that all of the data in the pipe is send to STDOUT. Return to the terminal session in which you added data to the pipe. Notice that it has been returned to the command prompt.
+Add more data to the pipe using one or more different commands and then read it again.
+Lab Project 10.	Using Compound Commands
+You can build up compound commands in the same way as you built complex pipelines of commands in Lab 7. 
+The rpm command allows you to install, upgrade, remove and query RPMs. RPM stands for Red Hat Package Management. The following commands specify an RPM name, uses the RPM command to determine whether it exists, and prints an appropriate message. Note that the command should be entered all on a single line as denoted by the “\”.
+RPM=acpid;rpm -q $RPM && echo "RPM $RPM Exists" || \
+echo "RPM $RPM Does not exist"
+Notice the “\” at the end of the first line of the command. On paper, that means that the next line is part of the first. On the actual CLI it can be used to extend the command to the next line. You can type the command all on one line or split it over multiple lines using the \ to delimit and tell the shell that the command is continued on the next line.
+The result of running this command is 
+	RPM acpid Exists
+Now issue the same command but misspell the RPM or enter a nonsense string for the name of the RPM:
+RPM=acpsdffwe;rpm -q $RPM && echo "RPM $RPM Exists" || \
+echo "RPM $RPM Does not exist"
+When the RPM does not exist the result of the command is
+ 	RPM acpsdffwe Does not exist
+The path taken is dependent upon the return code from the rpm –q command. There is a built-in variable, $?, which contains the return code from the previous command. The following commands use that variable to show the return code from the rpm –q command:
+rpm –q acpid;echo $?
+You should get a return code of “0” when you run this command. A return code of “0” usually means the command completed successfully from this. If you misspell the RPM name you should receive a 1 as the result. 
+
+Lab Project 11.	Basic Command Line Programming
+Adding loops to the CLI commands we have already learned provides a great deal of power to what we can accomplish from the command line. 
+RPM List
+Suppose someone asks for a list of all RPMs on a particular Linux computer and a short description of each. This happened to me while I worked at the State of North Carolina. Since Open Source was not “approved” and I only used Linux on my desktop computer, the pointy haired bosses (PHBs) needed a list of each piece of software that was installed on my computer so that they could “approve” an exception.
+How would you approach that? Well, here is one way, starting with the knowledge that the rpm –qi command provides a complete description of an RPM including the two items we want, name and a summary.
+You will build up to the final result a step at a time. First we list all RPMs.
+rpm -qa
+Adding first the sort and then the uniq commands sorts the list and then prints only the unique ones.
+rpm –qa | sort
+rpm –qa | sort | uniq
+
+Since this gives the correct list of RPMs you want to look at, we can use this as the input list to a loop that will print all of the details of each RPM.
+for I in `rpm -qa | sort | uniq`;do rpm -qi $I;done
+Notice the backticks (`) around your first piece of code. This command substitution creates the list of RPMs that are used in the loop. Placing backticks around any section of code allows the results of that code to be used as list input to other code. This is called command substitution.
+This code produces way more data than was desired. 
+The next step is to extract only the information that was requested. This code adds an egrep (extended grep) command which is used to OR ^Name or ^Summary. Thus any line with Name or Summary at the beginning of the line (the carat ^ specifies the beginning of the line) is displayed.
+for I in `rpm -qa | sort | uniq`;do rpm -qi $I;done | \
+egrep “^Name|^Summary”
+
+You can try grep instead of egrep in the command above but it does not work. You could also pipe the output of this command through the less filter.
+
+The final command sequence looks like this. It uses pipelines, redirection and a loop – all on a single line. It redirects the output of our little CLI program to a file that can be used in an email or as input for other purposes.
+for I in `rpm -qa | sort | uniq`;do rpm -qi $I;done | \
+egrep “^Name|^Summary” > /tmp/rpminfo.txt
+This process allows you to see the results of each step and to ensure that it is working as you expect and provides the desired results.
+Note that the PHBs received a list of over 1,900 separate pieces of software–actually the RPM packages. I seriously doubt that anyone actually read that list. 
+Check with the instructor if you have problems.
+
+Lab Project 12.	Backup with tar
+The tar command is widely used in many organizations for creating archives and backups. The tar command produces output in a standard format that is sent by default to STDOUT. This makes it very flexible and powerful. Many application programs are distributed as source files or as binaries in tarballs. A source file distributed as a tarball can be installed and compiled on any Linux or Unix system.
+Perform this lab project as root. Use the following command to create a tarball of the entire /home filesystem and store the output as /tmp/home.tar. This would be a normal type of backup to perform in many systems. This should not take long as you will have only a few files to backup.
+tar -cvf /tmp/home.tar /home/
+Verify that the tarball has been created. Now change to the /tmp directory and use the following command to view the Table of Contents, i.e., the list of files contained in the tarball.
+tar -tvf home.tar
+You should see a listing of all the files in the /home directory.
+The tar command extracts the contents of a tarball into the current directory. Be sure you are in the /tmp directory and extract the contents of the tarball into the /tmp directory with the following command.
+tar -xvf home.tar
+The above command extracts the data from the home.tar file into the present working directory along with the complete directory structure. You now have a /tmp/home directory which is identical to /home. If you had created a backup tarball of your /home directory and something destroyed the files there, you could make the pwd root (/) and then issue the above command using the complete absolute path to the tarball to restore all of the files directly into the /home directory.
+You can also restore single files or files that match a particular pattern such as all txt files or files in a particular subdirectory. Delete the /home/student/dmesg1.txt file and verify that it has been deleted. Then ensure you are in / and issue the following command which will restore only that one file.
+tar -xvf /tmp/home.tar  home/student/dmesg1.txt
+Verify that the file was restored correctly and notice that the date, time, permissions and ownership are all the same as the original.
+You can also create compressed files with the tar command. The following command creates a new, compressed tarball of /home. 
+tar -czvf /tmp/home2.tgz /home/
+Notice the significant difference in size between the two tarballs you have created. The home2.tgz file should be about 3% of the size of the home.tar file. Compression works really well on text files which is all you have in your home directory, but less so on binary executable or graphic files. 
+Use the tar command to look at the TOC for the home2.tgz file. Delete the entire /tmp/home directory and then use the following command to restore /home into /tmp from the home2.tgx tarball. Note that the tar command recognizes from the tgx extension that this is a gzipped file and decompresses it accordingly.
+tar -xvf home2.tgz
+It is also possible to gunzip .tgz files manually using the gunzip command. Uncompress home2.tgz using the following command.
+gunzip home2.tgz
+Note that the home2.tar and home.tar should be the same size or very close. They would only differ if you had changed the size of an existing file or added or deleted files from /home between the times at which the two tarballs were created.
+Now gzip the home2.tar file with the following command.
+gzip home2.tar
+The resulting gzipped tarball is named home2.tar.gz.  
+Do not delete the tarballs you have created. They will be used in a later lab project.
+Lab Project 13.	The Linux Boot and Startup Process
+This Lab Project explores the complexities of the Linux boot and startup processes. You will configure the GRUB bootloader to show many boot messages that are not normally displayed and use the dmesg command and the messages log file to locate kernel log messages. Knowing where to find these messages can be crucial to solving problems with the boot process and with determining whether new hardware is recognized by the kernel.
+The boot process starts when the computer is turned on and ends with the kernel loaded and running and started either init or systemd.
+The Linux startup process begins when the kernel has been loaded and started either systemd for Fedora 16 and above, or the init program for CentOS and releases of Fedora prior to 16.
+Startup is the process that takes a Linux computer from having a running kernel and nothing else, to one of (by default) four runlevels, each of which has its own characteristic set of capabilities. Other runlevels are defined but do not provide for a usable computer, such as runlevel 0 which is “off,” 6 which is “reboot,” or runlevel 4 which is generally a duplicate of runlevel 3.
+The installation performed in Lab Project 1 does not display any startup details so this project is about viewing those details and specifying the default runlevel. 
+These Lab Projects (13A and 13B) must each be performed as root. 
+For CentOS and earlier versions of Fedora up through Fedora 15, the GRUB configuration file is /boot/grub/grub.conf. For Fedora 16 and above the GRUB2 configuration file is /boot/grub2/grub.cfg. Be sure to use the correct configuration file for the distribution and release of Linux on your classroom host.
+Lab Project 13A:	CentOS 6.X and Fedora up through Release 15
+These instructions are for CentOS 6.X and Fedora up through Fedora Release 15 which all use GRUB and SystemV startup.
+The boot sequence
+    1. Modify grub.conf to make the startup a little more flexible using vi. Add a “#” character to the beginning of the hiddenmenu line. This causes the grub menu to be displayed during the boot process. This configuration line does not exist in Fedora 16 and above with GRUB2.
+    2. Change the timeout line from its current value, usually either 3 or 5, to 9 to allow more time to interrupt the boot and make a choice in the grub menu. This change, because it is made in the grub configuration file is persistent through reboots. Save the GRUB configuration file.
+    3. Enter the reboot command on the CLI to start the reboot.
+    4. At the GRUB menu press the “e” key to edit the boot parameters. You now have 9 seconds to do this and there is a countdown timer to show you how long is left. 
+    5. Notice for Fedora up through release 15 and for CentOS that there are  three lines on the screen as shown in Illustration 40. These correspond to the three lines in each kernel stanza in the /boot/grub/grub.conf file. Each line can be edited so that the boot process can be changed on a one-time basis. Any changes made here are for this boot only. The grub.conf file must be edited to make the changes permanent. 
+    6. Move the cursor to the middle line and press “e” to edit the line. 
+    7. Add a “3” at the end of the kernel parameters line. This will now boot your computer to runlevel 3 which is text mode. These changes are only effective for this boot and are not permanent.
+    8. Press the Enter key to leave edit mode and then press b to continue to boot the system. 
+    9. Notice that there is very little output which might make it difficult to troubleshoot a boot problem.
+    10. Reboot your computer and again edit the kernel parameters. 
+    11. Remove the word “quiet” and add a “3” at the end of the line.  Then continue the boot process.
+    12. Go through the entire boot process and pay particular attention to the process from the top down to the login message. Note that you can use the Shift-PageUp key to scroll back through the screen output. Note the information that is displayed. 
+    13. Now login.
+    14. Reboot again using the reboot command.
+    15. At the GRUB splash screen to press e for edit. Remove the “rhgb” and “quiet” parameters from the kernel parameters and once again, boot your computer to runlevel 3. These changes are only effective for this boot and are not permanent.
+    16. Notice the huge amount of data the scrolls by on the screen. It is very fast and pretty unreadable. Use the Shift-PageUp key to scroll back and look at the boot process again. Note that the message “Welcome to Fedora Release 15 (Lovelock)!” or  “Welcome to CentOS” is the demarcation between the kernel boot process and the Linux startup process. 
+       In earlier versions of Fedora and all current versions of RHEL and CentOS, the kernel boot message data also is stored in the /var/log/dmesg file. In Fedora 15, you have to use the dmesg command or extract it from the /var/log/messages file. When the computer will not complete the boot sequence, using this technique to display all of this boot data can help determine where in the process that it is failing.
+    17. Now login and enter the runlevel command. This displays the previous and current runlevel which should be N and 3. The N means that there was no previous runlevel.
+    18. Enter dmesg | less to view the kernel boot logs in the ring buffer.
+    19. Use the  cat /var/log/messages | grep kernel: | less  command to view the data from the kernel boot process. This is the same information that was displayed on the screen during boot. 
+    20. Reboot again and interrupt the process at the GRUB Menu.
+    21. This time edit the GRUB kernel line and append 1 at the end of the line.
+    22. Press the Enter key to leave edit mode and then press b to boot the system. Notice again that little of the text that was displayed in the previous boots is displayed now. 
+    23. In addition, you end up in run level 1. You can check this with the runlevel command.
+    24. Enter runlevel 3 with the command init 3. The init command can be used to switch between runlevels.
+The Startup sequence
+    25. Edit the file /boot/grub/grub.conf again. This time remove the “rhgb” (Red Hat Graphical Boot) and “quiet” arguments from the kernel line of the default startup stanza, usually stanza 0. making this change in the grub.conf file makes the change permanent so you don't have to make the change manually at the grub menu each time you reboot.
+    26. Reboot the computer. You will see many messages that comprise output from the startup sequence.
+    27. Change to the /var/log directory and use the less command to view the boot.log file. 
+       less boot.log
+       All of the startup sequence messages are recorded in this log. 
+
+Lab Project 13B:	CentOS 7.X and Fedora 16 and Above
+These instructions are for CentOS 7 and Fedora Release 16 and above which use GRUB2 and systemd startup.
+The boot sequence
+
+    1. For Fedora 16 and above using GRUB2 in /boot/grub2/grub.cfg, use vim to change the timeout line from its current value, usually either 3 or 5, to 9 to allow more time to interrupt the boot and make a choice in the grub menu. This change, because it is made in the grub configuration file is permanent – at least until it is changed again. Save the GRUB configuration file.
+    2. Enter the reboot command to start the reboot.
+    3. At the GRUB menu press e for edit. You now have 9 seconds to do this and there is a countdown timer to show you how long is left. 
+    4. For Fedora 16 and above─which all use GRUB2─there are many lines that can be edited. Choose the kernel line which begins “linux /vmlinuz”
+    5. Move the cursor to the kernel line and press the End key to begin editing at the end of the line. Note: You will have to scroll down in the GRUB2 menu editor to locate the kernel line.
+    6. Add a “3” at the end of the kernel parameters line as shown in about the middle of Illustration 42. This will now boot your computer to runlevel 3 which is text mode and not a GUI. These changes are only effective for this boot and are not permanent.
+    7. Press the F10 key to continue the boot process. 
+    8. Notice that there is very little output which might make it difficult to troubleshoot a boot problem.
+    9. Reboot your computer and again edit the kernel parameters. 
+    10. Remove the word “quiet” and add a “3” at the end of the line.  
+    11. Press F10 continue the boot process.
+    12. Go through the entire boot process and pay particular attention to the process from the top down to the  message “Welcome to Fedora 19 ... ”. Note that you can use the Shift-PageUp key to scroll back through the screen output. 
+    13. Now login.
+    14. Reboot again using the reboot command.
+    15. At the GRUB splash screen to press e for edit. Remove the “rhgb” and “quiet” parameters from the kernel parameters and once again, boot your computer to runlevel 3. These changes are only effective for this boot and are not permanent.
+    16. Notice the huge amount of data the scrolls by on the screen. It is very fast and pretty unreadable. Use the Shift-PageUp key to scroll back and look at the boot process again. Note that the message “Welcome to Fedora Release 19 ...” is the demarcation between the kernel boot process and the Linux startup process. 
+       In earlier versions of Fedora and all current versions of RHEL and CentOS, this data also is stored in the /var/log/dmesg file. In Fedora 15 and above, you have to use the dmesg command or extract the data from the /var/log/messages file — either method will work. When the computer will not complete the boot sequence, using these techniques to display all of this boot data can help determine where in the process that it is failing.
+    17. Now login and enter the runlevel command. This displays the previous and current runlevel which should be N and 3. The N means that there was no previous runlevel.
+    18. Enter dmesg | less to view the kernel boot logs in the ring buffer.
+    19. Use the  cat /var/log/messages | grep kernel: | less  command to view the data from the kernel boot process. This is the same information that was displayed on the screen during boot. 
+    20. Reboot again and interrupt the process at the GRUB Menu.
+    21. This time edit the GRUB kernel line and append 1 at the end of the line.
+    22. Press the F10 key to continue the boot process. Notice again that none of the text that was displayed in the previous boots is displayed now. 
+    23. In addition, you end up in run level 1. Note that with current versions of Fedora you must enter the root password to access Single user mode.
+    24. Verify that you are in runlevel 1 with the runlevel command.
+    25. Enter runlevel 3 with the command init 3. The init command can be used to switch between runlevels. 
+    26. Login and verify that your student host is in runlevel 3. Note that I have had instances where attempting to move from runlevel 1 (S) to runlevel 3 resulted in the host being at runlevel 5. If this is the case for you, run the init 3 command again and you should be in runlevel 3.
+The startup sequence
+       
+    27. Edit the file /boot/grub2/grub.cfg again. This time remove the “rhgb” (Red Hat Graphical Boot) and “quiet” arguments from the kernel lines of the startup stanzas. making this change in the grub.cfg file makes the change permanent so you don't have to make the change manually at the grub menu each time you reboot. An alternate way to make this change, rather than to edit the file using the vi editor is to use the sed command.
+       cd /boot/grub2
+       sed -i -e "s/rhgb//g" -e "s/quiet//g" grub.cfg
+       The above sed command removes both the “rhgb” and “quiet” entries from the kernel startup lines.
+    28. Reboot the computer. You will see many messages that comprise output from the startup sequence.
+    29. Change to the /var/log directory and use the cat or the less command to view the boot.log file. 
+       
+       less boot.log
+       All of the startup sequence messages are recorded in this log.
+    30. Notice that later in the startup sequence you might see “Starting SYSV...” or “Starting LSB...” messages. These indicate whether the startup of those services is accomplished directly by systemd or by legacy startup services such as SystemV init scripts or Linux Standards Base compliant start scripts. 
+Lab Project 14.	Managing and Using Runlevels
+Linux runlevels are used to define the various states of operation in which a Linux computer might be used. These range, in an init based system, from “off” (runlevel 0) to “Single user” (1 or S) to “Multi-user with a graphical user interface” (5) These runlevels are also available in systemd based systems but are defined in terms of “targets” such as multiuser.target and graphical.target.
+This lab project must be performed as root.
+Lab Project 14A:	Managing SystemV Init scripts in CentOS
+As you perform each step in this portion of the lab project, be sure to look at the contents of the runlevel directories, /etc/rc.d/rcX.d where X represents runlevel numbers. You can see the links in each of these directories change as the service is added or deleted from that runlevel.
+
+    1. Login to the CLI as root if you are not already, or su to root in a terminal session.
+    2. Type the command chkconfig –list | less  to list all of the services managed by System V start scripts. You can exit from the less command by pressing the q key.
+    3. Type chkconfig --list irda to list just the irda service. It should be off in all runlevels. irda is the InfraRed communication daemon and should not be required on a server or on many desktop computers.
+    4. Check the /etc/init.d/irda script and look for the chkconfig configuration line. Note that it is supposed to be off in all runlevels; that is what the “-” means.
+    5. Type service irda status to check the status of this service. It should not be running. Note that a few services do not respond to the status sub-command. 
+    6. Type the command service irda start to start the service now. 
+    7. You can also specify particular levels using the chkconfig command. Type the command 
+       chkconfig --level 35 irda on to turn irda on for only runlevels 3 and 5. Verify this with the chkconfig -list irda command.
+    8. Stop the irda service and use chkconfig to make sure it is off in all runlevels.
+    9. The pcscd daemon is used to deal with PC Smart Cards. The pcscd daemon is not required on your computer. Check its status using the service command, then stop it using the command service pcscd stop and verify that it has actually stopped. 
+    10. Now you can use chkconfig to ensure that the pcscd daemon is off in all runlevels.
+    11. Taking this one step further, use the command chkconfig --del pcscd to remove the service from control by the chkconfig command. Look in the rcX.d directories to verify that all start and stop links have been deleted. Also verify that the pcscd script still exists in init.d. Verify also using the command chkconfig --list pcscd  to ensure that it is no longer listed. You could also use the service command to check its status. You should get an error message from that command.
+    12. Add the pcscd control back into chkconfig using the chkconfig --add pcscd command and verify with the 
+       chkconfig --list pcscd command that it is now back under control of chkconfig. Notice that it has been re-added with the default information from the init script and not the last setting you made manually which was off in all runlevels.
+    13. Turn pcscd off in runlevel 3, but leave it on in the others in which it is already on.
+    14. Use the init 3 command to change to runlevel 3 and verify that the pcscd daemon is not running in that level. Then change back to runlevel 5, init 5. The init command still works to change runlevels. 
+    15. Issue the chkconfig pcscd off command in order to configure the pcscd daemon to be off in all runlevels. Stop the pcscd service which is probably running currently.
+Lab Project 14B:	Managing Runlevels with systemd in CentOS 7 and Fedora 17 and above
+    1. List all of the systemd units with the systemctl -a command. Note that the results of this command are already piped through the less filter.
+    2. List just the active units with the systemctl command to see which ones are running.
+    3. Use the command 
+       systemctl start rescue.target 
+       to enter Rescue mode. You will have to login as root.
+    4. Use the command
+       systemctl start default.target 
+       to return to the default.target which points to graphical.target and which is runlevel 5.
+    5. You may have to use the init 5 command or even reboot to make this work and actually get back to  the GUI. See the warning box above for details.
+    6. Change to the /lib/systemd/system directory. Run the command 
+       ls -l | grep target to view the target units. Notice that the various runlevel targets are symbolic links to various systemd targets. Which targets do runlevels 2,3, and 4 point to? _________________________________________________
+       Note that changing the default runlevel is not accomplished in the /lib/systemd/system directory. That is accomplished in the /etc/systemd/system directory.
+    7. Change into the /etc/systemd/system directory.
+    8. Look at the files and links in this directory. 
+       Where do the links point?_________________________________________________
+    9. Remove the existing default.target link. An error will occur while attempting to create the new link if you do not do this.
+    10. Run the following command to generate a new link to the desired run target.
+       systemctl enable multi-user.target 
+       Note that you could also create this link manually.
+    11. Reboot the computer. It will start up in multi-user mode which is the old runlevel 3.
+    12. Use the command man systemd.special to read about the special system units defined by systemd. Refer especially to the section, “default.target.”
+    13. Reboot your computer and type e at the GRUB splash screen. Edit the kernel line of the first (0) stanza and append the following:
+       systemd.unit=multi-user.target 
+       This should work and boot the system into multi-user mode which is the equivalent of runlevel 3.
+    14. Now return systemd startup to normal so that the default.target is symlinked to graphical.target.
+    15. Return to runlevel 5, GUI mode:init 5 or systemctl start graphical.target
+Managing Units and Services with systemd
+    1. List all of units, whether running or not, with the systemctl  command.
+    2. List all of the systemd targets with the systemctl list-units --type=target command.
+    3. Now list all running units with the systemctl -a list-units command. Take a look at the line for the pcscd.service unit.
+    4. Check the status of the pcscd service: systemctl status pcscd.service
+       What is its status?__________________________________________ It should be “loaded stopped” or “Loaded Failed” which just means it is stopped.
+    5. Start the pcscd service: systemctl start pcscd.service
+    6. Now check the status of the pcscd service. It should say “active running” and give the amount of time the service has been active. 
+    7. Configure the pcscd service to start at the next boot: 
+       systemctl enable pcscd.service
+    8. Reboot your host and verify that the service starts. For many services, this does not mean that the daemon is started and running, just that the socket required to communicate with the daemon has been created. The daemon will be started when a program or other service requests communication with it on that socket. The pcscd daemon, however, is still not completely integrated into systemd, so it may actually be running when started by systemd.
+       
+Lab Project 15:	Using Midnight Commander to Manage Files
+Midnight Commander (mc) provides an interactive, visually based, text mode program for navigating the filesystem and managing files. It can be used to copy, edit, move or delete files and complete directory trees. It can also be used to expand archive files of various types and explore their contents.
+Install Midnight Commander
+Use the command below to install Midnight Commander.
+yum -y install mc
+Using Midnight Commander as user student
+Ensure that you are logged in as the user student and that the current directory is /home/student, student's home directory.
+Start Midnight Commander with the mc command. Note that it starts with two open panes. Switch between the panes using the Tab key. Use the arrow keys to move the highlight bar (cursor) up and down the list of files and directories on the current pane. 
+Change directories by highlighting the desired directory in the current pane and press the Enter key. Move up to the parent directory can be accomplished by highlighting the double-dot (..) entry and pressing the Enter key.
+Notice the Function Key assignments at the bottom of the Midnight Commander window. F1 will display some help. There are also Function keys for Move, Copy, Delete and Quit, among others. Simply press the corresponding Function Key on the keyboard to perform that function.
+You can issue CLI commands simply by typing them; the CLI entry text box is at the bottom, just above the Function Key assignment line. The cursor there is always active while you are in navigation mode. To change the pwd of the current pane to the /tmp directory, type cd /tmp and press the Enter key, just as you would from the shell prompt. 
+Now use the Tab key to switch to the other pane. Navigate to the home directory for the user student. Highlight the file dmesg1.txt and press F3. This shows the contents of that file. Scroll up and down the file using the Page-up and Page-Down keys. Press F3 again to return to navigation mode. 
+Locate the dmesg2.txt file and press F8 to delete it. Press Enter to answer “Yes” to the question.
+Now, still as user student, navigate to /var/log and use F3 to open the messages file. You should get an error message “Permission denied.” Navigate this pane back to /home/student using the command cd on the Command Line Entry. 
+Regular users do not have access to the contents of many of the log files.
+Using Midnight Commander as root
+Now open a terminal session as root, if there is not already one open, and start Midnight Commander. Navigate in one pane to the /var/log directory. Highlight the messages file and press F3. This shows the content of the /var/log/messages file. Use F3 again to return to the navigation panes.
+Navigate the other pane to /tmp. So you should have one pane at /tmp and one at /var/log. Highlight the messages file and press F5 to copy it to /tmp. This displays a “Copy” dialogue and allows you to change certain parameters. Nothing needs to be changed at this time so simply press the Enter key. Notice that the file now appears in the other MC pane. Use the Tab key to switch to the /tmp pane.
+Highlight the home2.tar.gz file and press the Enter key. It may take a moment or two after which the contents of the this compressed tarball will be displayed.  
+Navigate through the directories in this file to locate the /tmp/home.tar.gz/home/student/dmesg2.txt file. Now switch to the other pane and navigate to the “real” /home/student directory. Switch back to the pane showing the contents of the tarball and highlight the dmesg2.txt file. Press F5 to copy it to the “real” home directory for student. This is a simple example of how you can use Midnight Commander to locate and restore a single file from almost any kind of archive file. 
+Like the rest of Linux, there is much more to MC than we have time for in this Lab Project. You should experiment with MC to learn more about it.
+Exit from Midnight Commander by pressing the F10 key and then press Enter to answer “Yes” to the question.
+Lab Project 16.	Managing Users
+Adding, managing and deleting users is an important part of Linux system administration. In this lab project you will perform some of these basic tasks.
+This lab project must be performed as root.
+
+    1. Enter the command useradd -c “Student User3” student3 to create the new user
+    2. Enter the command passwd student3 to set the password for the new account.
+    3. Type the password lockout and press Enter
+    4. Type the password again and press Enter
+    5. Notice that you get errors indicating that this is a bad password because it is based on a dictionary word and because it is too simple. This is true but root can do anything including assign bad passwords. A non-privileged user would be unable to change the password to a password that is short, too simple or is based on a dictionary word.
+    6. Create a user with the ID of “student4” and set a password. Verify that the /home/student4 directory was created.
+    7. Now delete student4 using the command userdel -r student4 and verify that the home directory for this user was deleted.
+    8. Delete the student3 account but do not use the -r option. Verify that the home directory for student3 has NOT been deleted. 
+    9. Delete the home directory for student3 manually. rm -rf /home/student3
+    10. If you are logged in as the user student, logout. 
+    11. As root, create the empty file, /etc/nologin. touch /etc/nologin
+    12. Attempt to login as student using the GUI and a virtual console. You should be unable to do so.
+    13. Now add a message to the nologin file. 
+       echo “Logins not permitted. System going down for maintenance” \ > /etc/nologin
+    14. Now attempt to login as student from a virtual console session. You should see the message and be unable to login.
+    15. Logout of the GUI desktop session and then login to the desktop as student using the GDM GUI login. You are not able to login and you will not see the message.
+    16. Delete /etc/nologin.
+
+Lab Project 17.	Managing Processes
+This lab project should be performed starting as the user student in the GUI.
+Start two terminal sessions. In one terminal session run top and position this window so you can see it as you perform the tasks below in the second terminal session. Observe the load averages displayed in top as you progress through this Lab Project.
+Start a screen session in the second terminal. In one screen session run the following program.
+let X=0;while [ 1 ];do printf "X =\t$X\n";let X=$X+1;done
+Using while [ 1 ] forces this to loop forever. Also the syntax is very picky; be sure to leave spaces around the “1” in this expression; [ 1 ] will work but [1] will not work. 
+This program will run until we stop it. Use the top program to show CPU usage. This should show that one BASH session is taking up a very large amount of CPU time. Record the PID for this BASH instance. You should also notice that the nice number of this BASH session is 0. In addition, use the Ctrl-a-“ key combination to note and record the number of the screen session running this program.
+Renice the process from within top. Simply type r and top asks you which process to renice. Enter the PID of the process and hit the Enter key. In my case the PID is 7533; the PID will definitely be different for you. Then it asks “Renice PID 7533 to value:”  Now type the number 10 and hit the Enter key. 
+Now open a new screen session in this terminal and change the nice number from the command line. 
+renice 20 7533
+The nice number should now be shown as 19 by top. Any number higher than 19 is interpreted to be 19. Although the system is no more or less responsive because this is a shell script and there is plenty of CPU available, this is one way to make a process behave more nicely. Remember that a bigger nice number means the program will be nicer to the rest of the system. 
+Now type the command:
+renice -20 7533
+You will receive an error indicating that you don't have permission to do this. You could still kill this process but a non-root user cannot renice their own processes to a lower (less nice) number. Why do you think that this might be the case? _________________________________________________
+_________________________________________________.
+The next part of this lab project should be performed as root.
+Switch to or open a new terminal session as root and start a screen session. Start top in one screen session.
+Now, as root, run the above command to reset the nice number of this process to -20. This will actually work this time and set the nice number for the process to -20, which as not nice as you can specify. Switch to the screen session running top and observe the nice number of this process. Again the system is no more or less responsive, but in a real environment a program that has a -20 nice number might cause the rest of the system to become very sluggish.
+Now, as root still, try to kill the process from within top. Back in the screen session in which top is running, type k. Now top asks “PID to kill:”. Type in the PID of the process, again in my case this would be 7533, and press the Enter key. The top program now displays “Kill PID 7533 with signal [15]:” At this point you could choose another signal or just press Enter. For now, just press Enter. Notice that nothing changes in top. Switch back to the screen session running our little program and notice that it is still running.
+Asking this program to kill itself nicely has not worked so we need to try a more forceful way to kill it. Let’s do this from the command line, although we could also do it from within top. We will use signal 9, SIGKILL, to kill this program.
+Go to an unused screen session and enter the command, being sure to use the correct PID on your system:
+kill -9 7533
+And the rest of this lab project should be again performed as the user student.
+Switch to the session running as user student. Notice that top no longer shows the BASH session. Using the Ctrl-a-“ key combination in screen shows that the screen session in which BASH and the program was running has been killed. So we killed not only our little program, but the entire session in which it was running. This is perhaps overkill, pardon the pun.
+As student start a new screen session. Note the number of the new screen session. It should be the same as the one that was terminated. Use the up arrow key to scroll up to the command that contains our little program and press the Enter key to restart it. Check top to determine the PID of the session running this program.
+Let’s try to terminate the program but leave the BASH session intact. Go to an unused screen session and issue the following command, being sure to use the correct PID:
+kill -2 12503
+This sends the SIGINT (2) signal to the BASH session. Go to the screen session running top and see that the program has been killed but the BASH session is still running. The CPU usage should be way down now. Also, switch to the screen session in which the program was running and verify that it has been killed but that the screen BASH session still exists. Note the error message. 
+While still in that screen session, restart the program. After it has run for a couple seconds, press Ctrl-c. Note that the running program is killed. Using kill -2 is the same as pressing Ctrl-c from within the session running the program.
+
+
+Lab Project 18.	Scheduling Tasks
+Linux provides multiple methods for scheduling tasks to run at some future time. This Lab Project provides you with some opportunity to schedule some tasks.
+Limiting Access to cron
+You should normally limit who has the ability to schedule cron jobs. This prevents users from setting up cron jobs that may use excessive amounts of system resources. Generally, root is the only user that should have access to cron.
+Adding user names to /etc/cron.allow will allow only those users to create cron jobs. All other users will be denied. As root, create the file /etc/cron.allow with the user name “root” (without the quotes) as it's only contents.
+As the user student attempt to create a cron job.  You should not be able to do so and you should see the following results.
+[student@student00 ~]$ crontab -e
+You (student) are not allowed to use this program (crontab)
+See crontab(1) for more information
+Scheduling Specific Tasks
+This portion of the Lab Project should be performed as root.
+You have three different tasks to run at prescheduled times. Create appropriate jobs using the scheduling tools you have learned about. Test what you can. Have the instructor check your work. One possible set of solutions is provided at the end of this Lab Project.
+    1. The first task is to run the free program to check the amount of free memory and store the results in a text file in /tmp. This program needs to be run once a day; it can be run at any time, but if the computer is turned off overnight and then back on it still needs to run that same day (within 24 hours) if it has not already.
+    2. The second task is to check the /var/log/messages file for lines relating to kernel errors and store those lines in a text file in /tmp. You expect a series of kernel messages due to a test that you will be running in a few minutes. This task needs to run only once 15 minutes from now.
+    3. The last task is to check the student home directory for files with a .bad extension and delete them. This is due to a really badly written program that spews these files into your home directory and fills up disk space if they are not deleted often enough. This program needs to run every 5 minutes from 7am to 6pm, Monday through Friday. It should not be run as root, but using the student ID.
+
+One Set of Solutions
+Note that this is just one possible set of solutions for these problems. Other solutions may work just as well. If you have questions about your own solution, check with the instructor.
+    1. Add a script into the directory /etc/cron.daily which contains the lines:
+       #!/bin/bash
+       /usr/bin/free > /tmp/free.out.txt
+       
+    2. Add an 'at' job for “now +15 minutes” that contains the line:
+       grep kernel /var/log/messages > /tmp/kernel.messages
+    3. As root, add a cron job for the user student with the command:
+       crontab -e -u student
+       
+       Then add the following line to the crontab file:
+       */5 * * * * /bin/rm ~/*bad
+
+Lab Project 19.	Adding a New Filesystem Partition
+This exercise takes you through the process of creating a new partition on an existing hard drive, creating a filesystem and a mountpoint and mounting the new filesystem. This is a common task  and you should become familiar with how to perform it. In many cases you will do this by adding a new hard drive with plenty of space. In this exercise we will use some space left free for this purpose. Other than the physical installation of the new hard drive, the process is the same.
+You can list the drive and its partitions using the fdisk –l -u=cylinders /dev/sda command. By default fdisk now displays units in sectors; cylinders used to be the default. The results should look similar to this:
+[root@instructor ~]# fdisk -l -u=cylinders /dev/sda
+
+Disk /dev/sda: 42.9 GB, 42949672960 bytes
+255 heads, 63 sectors/track, 5221 cylinders
+Units = cylinders of 16065 * 512 = 8225280 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk identifier: 0x0006393d
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sda1   *           1          64      512000   83  Linux
+/dev/sda2              64        2614    20480000   8e  Linux LVM
+[root@instructor ~]# 
+
+While we are here, notice the partition types in the Id column. Partition type 83 is a standard Linux partition. Type 82 would be a Linux swap partition. Type 5 is an extended partition and type 8e is a Linux LVM partition. The fdisk program does not provide any direct information on the sizes of partitions in bytes, but that can be calculated from the available information.
+Notice in the above example that the partition /dev/sda1 ends at cylinder 64 while the LVM partition /dev/sda2 ends at cylinder 2614. That leaves 2607 cylinders of free space on the hard drive that is available to use for creation of a new partition. The exact details may differ on your computer.
+As a quick aside here, using this long command is clunky. I like using cylinders as I think they are easier to read than blocks. So create an alias to make it easier to use. An alias substitutes a command for the one you typed in. In this case you should add the alias using the following command.
+alias fdisk='fdisk -u=cylinders'
+Now type the alias command with no options or arguments to see a list of all aliases. Verify that the alias you added above is listed. Now you can type fdisk without the “-u-cylinders” option.
+It is necessary to enter fdisk in interactive mode in order to create a new partition. Type fdisk /dev/sda to start fdisk to manage the sda device. Do not use /dev/sdaX for a specific partition; you want the whole drive.
+Type p and press Enter to print (p =  print, get it?) the current partition table for this device. It should look similar to the above example. 
+Type n and press Enter to create a new partition. Type p and press Enter to create a new primary partition. Since primary partition numbers 1 and 2 are in use, fdisk automatically selects partition 3. If multiple primary partitions had been free, fdisk would have asked you to enter a partition number.
+The sequence is shown below. Remember that you created the alias to display cylinders.
+[root@instructor ~]# fdisk /dev/sda
+
+WARNING: cylinders as display units are deprecated. Use command 'u' to change units to sectors.
+
+Command (m for help): p
+
+Disk /dev/sda: 42.9 GB, 42949672960 bytes
+255 heads, 63 sectors/track, 5221 cylinders
+Units = cylinders of 16065 * 512 = 8225280 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk identifier: 0x0006393d
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sda1   *           1          64      512000   83  Linux
+/dev/sda2              64        2614    20480000   8e  Linux LVM
+
+Command (m for help): n
+Command action
+   e   extended
+   p   primary partition (1-4)
+p
+Partition number (1-4, default 3): 
+Using default value 3
+First cylinder (2614-5221, default 2614):
+
+The fdisk program is smart enough to detect the first free cylinder on the disk and make it the default starting point for the new partition. Just hit the Enter key to select the first free cylinder as the default starting point for the new partition. 
+Notice that fdisk now shows the default last cylinder as the last one available in this contiguous space on the disk. Do not accept this default as we do not want to use the entire disk for this lab project, just a part of it.
+To specify the size of the new partition as 5GB, enter +5G and press Enter.
+Type p to print the new partition table. The results should be similar to those below.
+Command (m for help): p
+Disk /dev/sda: 42.9 GB, 42949672960 bytes
+255 heads, 63 sectors/track, 5221 cylinders
+Units = cylinders of 16065 * 512 = 8225280 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk identifier: 0x0006393d
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sda1   *           1          64      512000   83  Linux
+/dev/sda2              64        2614    20480000   8e  Linux LVM
+/dev/sda3            2614        3267     5249153   83  Linux
+
+Note that the new partition table has not yet been written to the disk. Now type w to write the new partition table to the disk and exit from fdisk. You should get the following message which indicates that the kernel is not yet aware of the new partition table.
+Command (m for help): w                       
+The partition table has been altered!
+
+Calling ioctl() to re-read partition table.
+
+WARNING: Re-reading the partition table failed with error 16: Device or resource busy.
+The kernel still uses the old table. The new table will be used at
+the next reboot or after you run partprobe(8) or kpartx(8)
+Syncing disks.
+
+Previous releases said that a reboot is required to reread the partition table. That was not really true. As this message now says, you can use the partprobe command to force the kernel to reread the partition table on the fly. Do that now. No parameters are required.
+At this point we are only partway through. We have created a partition but not a filesystem so our next step is to create a filesystem and a mountpoint. Since our new partition is /dev/sda3, enter the command mkfs –t ext4 /dev/sda3 to create a new EXT4 filesystem on /dev/sda3. 
+Let’s label this partition as /stuff. Use the command e2label /dev/sda3 to show the current label which should be blank. Then enter the command e2label /dev/sda3 /stuff to set the new label. Use the e2label command to verify that the label has been set correctly.
+Now create a mountpoint. mkdir /stuff
+At this point we can mount the new filesystem manually using the command mount /dev/sda3 /stuff to do that. Use the mount command to verify that the new filesystem has been mounted. Now unmount the filesystem with the umount /stuff command.
+
+The last step we need to take is to add this new filesystem to /etc/fstab in order to be able to mount it automatically at boot or with a simpler mount command. Use vim to add the following line to /etc/fstab:
+/dev/sda3    /stuff     ext4    defaults        1 2
+
+Now you can mount this partition with the mount /stuff command. You could also use the mount –a command which would mount all unmounted partitions that have the keyword defaults or auto. A noauto keyword in the options column of the fstab file would prevent the partition from being automatically mounted at boot time or with the mount –a command.
+Use the mount command to verify that the new filesystem has been mounted correctly. Copy a file or two to stuff and  use the ls command to verify that the files are there. 
+Unmount the /stuff filesystem with the  umount /stuff command. Edit /etc/fstab and change the line for the /stuff filesystem so that the filesystem is identified by the label you created earlier rather than the device name.
+LABEL=/stuff    /stuff     ext4    defaults        1 2
+Now mount the /stuff filesystem. Verify that it has been correctly mounted. 
+Important: Let’s now unmount this filesystem as we will use this space for the next exercise. Just issue the umount /stuff command to do that. Delete the line for this filesystem from /etc/fstab.
+Remember that we have simply added a new raw Linux type 83 partition and created an EXT4 filesystem on it and then mounted that new filesystem on a new mountpoint. It is not possible expand an existing raw Linux type 83 partition with EXT3 or EXT4 filesystems unless free space exists at the end of the partition to be expanded. 
+
+Lab Project 20.	Managing Filesystems with LVM
+Adding a new filesystem or adding space to an existing one are fairly common disk management tasks.  Using LVM makes these tasks easy and they can be done while the system is up and running. Mounted, active filesystems do not even need to be unmounted and taken off line in order to be expanded when using LVM.
+Adding a New Volume Group
+We already have a partition that we created in Lab Project 19 so we can use that without having to create a new partition. Normally after creating a new partition, we would create the Physical Volume over the raw partition. In this case we can simply create the PV and ignore the existing filesystem and it will be overwritten.
+If you have not already, unmount the /stuff filesystem and comment out the entry for /stuff in /etc/fstab.
+Use the pvs command to show the list of current Physical Volumes. It should look similar to this:
+[root@student ~]# pvs
+  PV         VG            Fmt  Attr PSize  PFree
+  /dev/sda2  vg_student lvm2 a-   19.50g 4.75g
+
+This shows that the PV is on /dev/sda2 and that it is part (or all) of Volume Group vg_student. It also shows the amount of space used and that there is still some free space available in the PV. We will use some of that space later.
+Use the command fdisk –l /dev/sda to verify the partition we will be using for this exercise. It should be /dev/sda3, the same partition we created in Exercise 12. You won't need the -u option if you created the alias for fdisk in Lab Project 20. 
+Use the command pvcreate /dev/sda3 to create the new PV. And use the following command to create a new Volume Group named TestVG from the PV on /dev/sda3. This command uses all of the space on /dev/sda3 for the new Physical Volume.
+Now create the Volume Group (VG) with the following command.
+vgcreate TestVG /dev/sda3
+Notice that it is necessary to specify the device because there is no name or other identifying attribute for the PV. You can use a list of PVs to add several to the new Volume Group in a single command. So a single VG can be composed of multiple PVs.
+Use the pvs and vgs command to list the PVs and Vgs, respectively, to verify your work so far.
+Now we need to create a Logical Volume and a filesystem on the new Volume Group. The command below creates a new volume with the name TestVol with a size of 500MB on the Volume Group TestVG.
+lvcreate -L 500M TestVG --name TestVol
+
+Look in the /dev directory and locate the directories vg_student and TestVG, which contain the Logical Volumes for those respective Volume Groups. Look in each one of the two directories. The /dev/TestVG/TestVol device will be used to create the filesystem. And now create the filesystem in just the same way as on a regular partition with the following command:
+mkfs –t ext4 /dev/TestVG/TestVol
+Add a label “/stuff” to the filesystem on the logical volume with the command:
+	e2label /dev/TestVG/TestVol stuff
+
+We need to add an entry to /etc/fstab for this new filesystem. Of course you could continue to use the line already in /etc/fstab that uses the /stuff label.  If you choose note to use the existing line that refers to /stuff, add the following line and delete or comment out the LABEL=/stuff line:
+/dev/TestVG/TestVol     /stuff      ext4    defaults        1 2
+You can now mount this filesystem with the command: mount /stuff
+Now look around a bit. Use the pvs, vgs and lvs commands as well as the mount and df commands to look at the LVM environment as it now exists. Pay particular attention to any free space that might still be available in your Volume Groups.
+Expanding a Volume
+Logical Volumes and Volume Groups can both be extended on the fly. This capability gives significant power and flexibility to the administrator when more space needs to be added to a filesystem. Volume Group vg_studentX has a little additional space on it, so lets use that to demonstrate. You will add 1GB of space to the root filesystem (/). 
+The vgs command should show the following, or something very similar. The vg_studentX X will be the volume group for your hostname.
+[root@student ~]# vgs
+  VG            #PV #LV #SN Attr   VSize  VFree
+  TestVG          1   1   0 wz--n-  5.00g 4.52g
+  vg_studentX     1   6   0 wz--n- 19.50g 4.75g
+
+First, cd into /root and open the file install.log with vi. You won’t actually edit this file, unless you just want to play with it, but it is just to prove the point that an active filesystem with open files can be extended. The /root directory is part of the / (root) filesystem.
+Enter the lsof / command to list the open files on the / filesystem. There are plenty. Remember, all of the system binaries and library files are located in the root filesystem as are many configuration files. Verify that the install.log file is open by the vi program. How many total files are open in the / filesystem? ____________________________. Do not quit editing install.log. Leave it open in vi.
+There is still space on vg_student and although we do not actually need to extend the VG itself, we are going to do that anyway as a first step. 
+To begin with, create a new partition. You need to create an extended partition first and then the Linux partition we will use to create a new Physical Volume for LVM. Create a new Extended partition that takes the rest of the hard drive and then create a Linux partition that is 5GB in size. Be sure to write the altered partition table and then use the partprobe command to force the kernel to reread it.
+Create a new Physical Volume from this space which should be the device /dev/sda5.
+pvcreate /dev/sda5
+Add this new PV to the existing vg_student Volume Group, which is where the / root partition is located. 
+vgextend vg_student /dev/sda5
+Use the pvs command to show that /dev/sda5 is now part of vg_student.
+Now we just need to extend the / volume and resize the filesystem to expand it into the new space. Lets just add 1GB to the / Logical Volume with the lvextend command:
+[root@student ~]# lvextend -L +1G /dev/vg_student/root
+  Rounding up size to full physical extent 1.20 GiB
+  Extending logical volume root to 3.48 GiB
+  Logical volume root successfully resized
+
+At this point the Logical Volume has been extended but the filesystem has not. Use the df and lvs commands to verify this. Resize the / filesystem.
+[root@instructor ~]# resize2fs /dev/vg_student/root 
+resize2fs 1.41.14 (22-Dec-2010)
+Filesystem at /dev/vg_student/root is mounted on /; on-line resizing required
+old desc_blocks = 1, new_desc_blocks = 1
+Performing an on-line resize of /dev/vg_student/root to 647168 (4k) blocks.
+The filesystem on /dev/vg_student/root is now 909312 blocks long.
+
+Notice that it is not necessary to specify a size or the amount of increase if you wish the filesystem to expand to fill the entire space on the Logical Volume. 
+It is very important to understand that we have increased the size of the / (root) filesystem not specifically the /root directory. Use df and lvs to verify this. The / filesystem is the most critical filesystem on a Linux computer. If it could be unmounted the system would come to a halt immediately. This filesystem is in constant and continuous use by the operating system. The ability to extend the Logical Volume and the filesystem on which / exists means that there should never be a time when any full or nearly full filesystem cannot be expanded while the system is up and running.
+That is not to say that it is a good idea to resize a filesystem on a business critical system while it is running under a full load. Good judgment is still required. ☺ 
+
+Lab Project 21.	Exploring and Repairing EXT Filesystems
+This lab project applies to EXT2, EXT3 and EXT4 filesystems. For the most part, differences in the filesystems are minor as far as the commands used to manage them. 
+Exploring EXT Filesystems
+Use the dumpe2fs command to view the first few lines data for the /boot filesystem.
+dumpe2fs /dev/sda1 | head
+Note that the first line is the Filesystem volume name, which is blank. Add a label to /boot with the following command.
+e2label /dev/sda1 /boot
+Now issue the dumpe2fs /dev/sda1 | head again. Notice that the volume name is now /boot. 
+Verify that the filesystem UUID is the same as that used in /etc/fstab to mount the /boot filesystem with. Also check the Inode count and the times the filesystem was last mounted. how many total Groups are there in the /boot filesystem?___________________
+Now use the following dumpe2fs command to look at the data for /home. You can use the df command or look in /etc/fstab for the device path.
+dumpe2fs /dev/mapper/vg_student0X-home
+Be sure to use the correct device path for your system.
+Unmount the /boot filesystem umount /boot and add a line to /etc/fstab to mount the /boot filesystem using the label you added to it above. The line in /etc/fstab should look like this:
+LABEL=/boot  /boot   ext4    defaults   1 2
+Comment out the line that mounts /boot using the UUID and manually mount /boot.
+mount /boot
+Repairing EXT Filesystems
+It is strongly recommended that filesystems being repaired be offline and unmounted when doing so. In fact, it is best that the fsck program be run only in single user mode or even better, in rescue mode. For our purposes, on a student machine and for demonstration purposes runlevel 3 or 5 will be fine. 
+If you are not already logged in at the console, do so now. Before unmounting a filesystem, you should check for open files. 
+lsof /stuff
+If there are open files in that directory you should not continue. Close the open files and then run the lsof command again.
+Regardless of the runlevel you are using, unmount the /stuff filesystem. 
+umount /stuff
+Run the following command to perform a filesystem consistency check..
+fsck –a /stuff
+The –a parameter would automatically repair any inconsistencies that might be found. This is a fairly verbose command so it will report any inconsistencies and the repair actions it takes.
+Now remount the /stuff filesystem and return to runlevel 5 if you performed this lab project in any other runlevel.
+mount /stuff
+Lab Project 22.	Files
+Managing and manipulating files and links is a large part of the system administrator’s daily work. In this project you will learn about dealing with files and links.
+Links
+There are two types of links; hard and soft. In this part of the exercise you will learn how to create links and about some of their properties.
+Symbolic (soft) Links
+Be sure to make your pwd /root (the root home directory) for this part of the exercise.
+Link the /var/log/dmesg file to the root home directory with the following command. By default the ln command tries to create a link with the same name as the target file.
+ln -s /var/log/messages
+Do a long listing of the files to see the link. It’s listing should look like this:
+lrwxrwxrwx. 1 root root    17 Jul 10 10:04 messages -> /var/log/messages
+Because there is no file of this name in the current directory, this command works without an error.
+Now create a symbolic link to the install.log file in root’s home directory.
+ln -s install.log
+ln: failed to create symbolic link `./install.log': File exists
+
+Because the file already exists the ln command throws an error. Now create the link using a new name for the link, install.log.softlink1.
+[root@instructor ~]# ln -s install.log install.log.softlink1
+[root@instructor ~]# ls -l
+total 284
+-rw-------. 1 root root  1892 Jun  9 15:47 anaconda-ks.cfg
+-rw-r--r--. 1 root root 35691 Jun  9 15:35 dmesg1.txt
+-rw-r--r--. 1 root root 35691 Jun  9 15:35 dmesg2.txt
+-rw-r--r--. 1 root root 35691 Jun  9 15:35 dmesg3.txt
+-rw-r--r--. 1 root root 23444 Jun 16 16:51 fedora_frog-2.0-15.0.0.noarch.rpm
+-rw-r--r--. 1 root root 65796 Jun 28 09:39 install.log
+lrwxrwxrwx. 1 root root    11 Jul 10 10:07 install.log.softlink1 -> install.log
+-rw-r--r--. 1 root root 10646 Jun  9 15:41 install.log.syslog
+lrwxrwxrwx. 1 root root    17 Jul 10 10:04 messages -> /var/log/messages
+-rw-r--r--. 1 root root     0 Jun  9 15:35 newfile.txt
+-rw-r--r--. 1 root root 65780 Jun  9 15:31 testfile.txt
+
+In this case the link is created without a problem. Use cat to view the contents of install.log.softlink1.
+Now rename the install.log file.
+
+mv install.log install.log.bak
+List the contents of the directory and use cat to view the contents of the link, install.log.softlink1. In the directory listing the symbolic link still exists but the entry for the link has a red background which means that it is a broken link. In a black and white only or green terminal, the red background may not show up. The file command will identify a broken link.
+file install.log.softlink1
+When attempting to cat the file it throws an error indicating that the file does not exist. Now rename install.log.bak back to install.log and list the directory and cat the contents. Everything is now as it should be and the link is now valid because there is a file to which it points. It could be any file given that name.
+Create a soft link from the /tmp directory to the install.log file.
+cd /tmp
+ln –s /root/install.log
+Do a long listing of the /tmp directory to see that the link has been correctly created. Remember that /tmp is on a different filesystem from /root and that only a symbolic link can be created across filesystems.
+Notice that soft, or symbolic links, the number of hard links to the original file did not change at any time during this exercise. That column is the numeric data in a long listing between the file permissions and the owner. Symbolic links do not change the number of hard links to a file’s inode; it points instead to the directory entry of the file. 
+Notice also that the soft link is much smaller than the real install.log file.
+Hard Links
+Hard links create a new directory entry pointing to the same inode, so when hard links are added to a file you will see the number of links increase.
+Ensure that the current, or Present Working Directory (pwd) is root’s home directory. Create a hard link to the file install.log with the following command.
+ln install.log install.log.hardlink1
+Do a long listing of the directory and you should see the following lines.Use the ls -li command to display the Inode numbers for the files.
+7758 -rw-r--r--. 3 root root 65796 Jun 28 09:39 install.log
+7758 -rw-r--r--. 3 root root 65796 Jun 28 09:39 install.log.hardlink1
+7881 lrwxrwxrwx. 1 root root    11 Jul 10 10:07 install.log.softlink1 -> install.log
+
+Notice that both files have 2 links and are exactly the same size. The date stamp is also the same. This is really one file with one Inode and two links, i.e., directory entries to it. Notice that the Inode number for the softlink, install.log.softlink1, is different from the two hardlink Inodes.
+Now create a second hard link to this file. The link can be created to either of the existing ones.
+
+ln install.log.hardlink1 install.log.hardlink2
+A long listing of the directory now shows that there are three hard links to this file. Use ls -li to show the Inode numbers.
+7758 -rw-r--r--. 3 root root 65796 Jun 28 09:39 install.log
+7758 -rw-r--r--. 3 root root 65796 Jun 28 09:39 install.log.hardlink1
+7758 -rw-r--r--. 3 root root 65796 Jun 28 09:39 install.log.hardlink2
+7881 lrwxrwxrwx. 1 root root    11 Jul 10 10:07 install.log.softlink1 -> install.log
+
+Now try to create a hard link from the /tmp directory to the install.log file.
+[root@instructor tmp]# ln /root/install.log install.log 
+ln: failed to create hard link `install.log' => `/root/install.log': Invalid cross-device link
+
+The command results in an error which indicates that the link cannot be made across devices. This is due to the fact that /tmp and /root are on different filesystems.
+Use the ls –li command to display the /root directory.
+[root@instructor ~]# ls -li
+total 420
+7877 -rw-------. 1 root root  1892 Jun  9 15:47 anaconda-ks.cfg
+ 861 -rw-r--r--. 1 root root 35691 Jun  9 15:35 dmesg1.txt
+ 863 -rw-r--r--. 1 root root 35691 Jun  9 15:35 dmesg2.txt
+ 877 -rw-r--r--. 1 root root 35691 Jun  9 15:35 dmesg3.txt
+2385 -rw-r--r--. 1 root root 23444 Jun 16 16:51 fedora_frog-2.0-15.0.0.noarch.rpm
+7758 -rw-r--r--. 3 root root 65796 Jun 28 09:39 install.log
+7758 -rw-r--r--. 3 root root 65796 Jun 28 09:39 install.log.hardlink1
+7758 -rw-r--r--. 3 root root 65796 Jun 28 09:39 install.log.hardlink2
+7881 lrwxrwxrwx. 1 root root    11 Jul 10 10:07 install.log.softlink1 -> install.log
+  19 -rw-r--r--. 1 root root 10646 Jun  9 15:41 install.log.syslog
+7761 lrwxrwxrwx. 1 root root    17 Jul 10 10:04 messages -> /var/log/messages
+ 879 -rw-r--r--. 1 root root     0 Jun  9 15:35 newfile.txt
+ 853 -rw-r--r--. 1 root root 65780 Jun  9 15:31 testfile.txt
+
+The leftmost column of numbers are the inodes for the files in the listing. Notice that all of the hard links to the install.log file have the same inode but the soft link has a different inode.
+Locating Files
+Sometimes finding files can be the hardest part of managing them. Linux has a couple tools to assist with locating files using several different criteria. Using the locate command to find files by name is very easy. 
+The locate lvm command will find all files and directories that contain the string “lvm.” The locate command relies on a database that is built every night. Take a look at the file /etc/cron.daily/mlocate.cron. As a result files added or deleted since the last update of the database may incorrectly show up or not be displayed in the results. You can run the updatedb command to bring the database up to date.
+File globbing patterns also work with the locate command. If no file globbing patterns are explicitly used, the search pattern is *PATTERN*.
+A more flexible command used for finding files is “find.” Suppose you want to find all of the empty (zero length) files in your entire filesystem while ignoring empty directories. The first command below does this. It starts looking at the root (/) directory for files (type  f)  that are empty. The results really surprised me. Using wc to count them I found over 8000 empty files. 
+find / -type f -empty | wc
+The next example uses the bang (!) to negate the meaning of empty so it finds all files that are not empty. You can list all of the files resulting from each command by not piping the output of find through the wc command.
+find / -type f ! -empty | wc
+Locating files with Several Hard Links
+The find command also locates files with multiple hard links. Use the following command to locate all files with 5 hard links.
+find / -type f -links 5
+Now pick one of the files you have found and determine the inode for the file, and then locate all of the file names that share the same inode, and thus the same file. In this case I chose the file /sbin/fsck.ext3. 
+[root@instructor /]# ls -i /sbin/fsck.ext3
+1072 /sbin/fsck.ext3
+[root@instructor /]# find / -inum 1072
+/usr/share/terminfo/x/xterm-new
+/var/lib/yum/yumdb/k/c41d36b278cf65483701ede5b4f230e744b17fbb-khmeros-base-fonts-5.0-11.fc15-noarch
+/sbin/fsck.ext3
+/sbin/fsck.ext2
+/sbin/fsck.ext4
+/sbin/e2fsck
+/sbin/fsck.ext4dev
+/sys/devices/pci0000:00/0000:00:01.0/power/wakeup_hit_count
+/sys/kernel/debug/tracing/events/syscalls/sys_enter_times/id
+
+This gives you a list of all the files that are hardlinked to that same Inode. So you can see that the fsck.ext3 command is actually the same file as fsck.ext2 and fsck.ext3, among others. However, you can also see that there are other files in other filesystems that have the same Inode. This is why hardlinks cannot be made across filesystems; because files in other filesystems can also have the same Inode number. A better way to locate just the files related to fsck is to use the following command.
+find /sbin -inum 1072
+File Information
+There are a number of different types of files that you can run into in a Linux environment, and it is not a good idea to perform some operations on the wrong type of file. Linux has some commands to help you determine a great deal of information about files.
+The file command tells what type of file it is. The following command tells us that the .bash_profile file is ASCII text file.
+[root@instructor ~]# file ~/.bash_profile
+/root/.bash_profile: ASCII English text
+
+And the following command tells us that /bin/ls is a compiled executable binary file that is dynamically linked. 
+[root@instructor /]# file /bin/ls
+/bin/ls: ELF 32-bit LSB executable, Intel 80386, version 1 (SYSV), dynamically linked (uses shared libs), for GNU/Linux 2.6.32, stripped
+
+You might want to use text tools such as vi or cat on the first, but definitely not on the second.
+The strings command extracts all of the text strings from any file including binary executables. Use the command below to view the text strings in the ls executable. You may need to pipe the output through the less filter.
+strings /bin/ls
+The stat command provides a great deal of information about a file. The following command shows atime, ctime and mtime; the file size in bytes and blocks; its inode, the number of (hard) links and more.
+[root@instructor /]# stat /bin/ls
+  File: `/bin/ls'
+  Size: 116632          Blocks: 232        IO Block: 4096   regular file
+Device: fd00h/64768d    Inode: 1313        Links: 1
+Access: (0755/-rwxr-xr-x)  Uid: (    0/    root)   Gid: (    0/    root)
+Context: system_u:object_r:bin_t:s0
+Access: 2011-07-10 10:03:03.032982631 -0400
+Modify: 2011-02-08 06:46:44.000000000 -0500
+Change: 2011-06-09 12:32:23.932043401 -0400
+ Birth: -
+
+
+Lab Project 23:	Package Management
+RPM is the Red Hat Package Manager. It is a very powerful program that allows installation, removal and management of RPMs. It has some drawbacks such as no ability to deal with dependencies in RPMs being installed or removed. 
+Yum is a wrapper around the RPM program. It provides installation of RPM packages from local or remote repositories and deals with dependencies as required.
+RPM
+Your instructor will provide you with two RPMs. Install the Fedora Frog V 2.0-14 RPM from the file in the /root directory. 
+
+[root@instructor ~]# rpm -ivh fedora_frog-2.0-14.0.0.noarch.rpm
+Preparing...                ########################################### [100%]
+   1:fedora_frog            ########################################### [100%]
+
+The Fedora Frog program is now installed in /usr/local/bin
+and the license files installed in /usr/share/doc/frog.
+If you have any old copies located in your home directory
+you should delete the ~/.frog directory now.
+
+Use the command:
+frog -h for help
+frog    to run frog and install applications
+frog -r to remove packages
+
+Now upgrade the program with the Fedora Frog V2.0-15 RPM located in /root.
+
+[root@instructor ~]# rpm -Uvh fedora_frog-2.0-15.0.0.noarch.rpm
+Preparing...           ########################################### [100%]
+   1:fedora_frog       ########################################### [100%]
+
+The Fedora Frog program is now installed in /usr/local/bin
+and the license files installed in /usr/share/doc/frog.
+If you have any old copies located in your home directory
+you should delete the ~/.frog directory now.
+
+Use the command:
+frog -h for help
+frog    to run frog and install applications
+frog -r to remove packages
+
+How does this work if we have a dependency that is not met. Determine the dependencies of Fedora Frog.
+
+	rpm -q --requires fedora_frog 
+
+One of the dependencies for Fedora Frog is wget which is a CLI program that allows scripted or interactive downloading of files from web sites. Remove the frog program and the dependency, “wget”. The wget program can download files from the Internet from the command line or a script. The wget program is required by the Fedor Frog program.
+rpm -e fedora_frog wget
+
+Notice that the RPM command can accept a list of RPMs to install or remove. It will work so long as there are no unresolved dependencies.
+Attempt to install Fedora Frog V2.0-15 RPM.
+
+[root@instructor ~]# rpm -ivh fedora_frog-2.0-15.0.0.noarch.rpm
+error: Failed dependencies:
+        wget is needed by fedora_frog-2.0-15.0.0.noarch
+
+This throws an error because of the missing dependency.
+YUM
+Now install Fedora Frog using YUM. YUM can install local RPMs as well as from local or remote repositories. We do not have a local repository and the Frog package is not in any remote repository. The wget package is located in the “fedora” repository at the Fedora web site. Use the command yum list wget to determine whether wget is located in a Fedora repository and which one.
+Install Fedora Frog using YUM.
+yum -y install fedora_frog-2.0-15.0.0.noarch.rpm
+You will see  the output from YUM as it processes the Fedora Frog RPM and determines that a dependency is required. 
+Adding Repositories
+Adding repositories can make adding new software much easier and faster. The RPMFusion repositories contain many packages that are not provided with the Fedora distributions of repositories.
+If you wish, you may take a few minutes to use your browser to explore the www.rpmfusion.org web site.
+For CentOS and Red Hat, you must first install the EPEL (Extra Programs for Enterprise Linux) repository.
+cd /root
+wget http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+wget http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
+rpm -Uvh remi-release-6*.rpm epel-release-6*.rpm
+Use wget to download the RPMFusion RPMs into /root.  
+For Fedora:
+Enter each of the following two commands. Each command should be on a single line. They are split here due to space issues.
+wget http://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-stable.noarch.rpm
+wget http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-stable.noarch.rpm
+
+For CentOS:
+Enter each of the following two commands. Each command should be on a single line. They are split here due to space issues.
+wget -c http://download1.rpmfusion.org/free/el/updates/6/i386/rpmfusion-free-release-6-1.noarch.rpm
+wget -c http://download1.rpmfusion.org/nonfree/el/updates/6/i386/rpmfusion-nonfree-release-6-1.noarch.rpm
+
+Install these two RPMs locally with the following command.
+yum -y install rpmfusion*
+Change to the /etc/yum.repos.d directory and list the files there. You should see several RPMFusion repositories. You should also see the default fedora and fedora-updates repository configuration files. 
+Look at the contents of some of these files. Notice that the testing and rawhide repositories have enabled=0 which means that they are disabled. These are repositories used for testing and should never be enabled unless you are a programming expert and like self-flagellation.
+Some repositories simply have you download the repo file and place it in /etc/yum.repos.d instead of packaging them in an RPM.
+Using YUM to Explore Software
+It is not necessary for you to know which repository contains a package you want to install so long as the repository configuration file exists in /etc/yum.repos.d. 
+You can obtain  list of all available, i.e., not installed, packages using the command below. Note that the following command will produce over 19,500 lines of data so you should store the output in a file as is shown.
+yum list available > /tmp/available.list
+The list produced 
+You can use the “installed” argument instead of “available” to list all installed software. You can also search for specific packages using patterns and file globbing, such as in the command:
+yum list ruby* | less
+The above command lists all packages whether installed or available that begin with “ruby”. YUM first lists all installed packages and then all available packages that match the pattern.
+You can obtain more detailed information about a specific package using the “info” argument. Suppose you want to investigate BackupPC as a possible backup solution. Enter the following command to obtain information about BackupPC.
+yum info BackupPC
+The information displayed includes the package name and version, and a summary of the package as well as a somewhat more verbose description of the package.
+Installing Software from a Repository
+Install the BackupPC package and all of its dependencies using the following command:
+yum install BackupPC
+This command pauses to display the list of packages to be installed. You should see a list of  packages that need to be installed for dependencies. Type y and press the Enter key to install all of the packages in the list. It will take a little time to download all of the required packages and install them.
+Updating All Packages
+Now update all packages for which updates are available with the following command.
+yum -y update
+Observe the update process. Notice that there will be a large number of packages to update; well over 400. It will take some time to perform this task which takes place in phases. 
+    1. Determine which installed packages have updates available.
+    2. Check for and add dependencies.
+    3. Download the required packages or deltas.
+    4. Rebuild RPMs using deltas.
+    5. Install the updates.
+
+Due to bandwidth limitations in the classroom and the number of packages that will need updated, this process can take a long time. When the downloads begin, let the instructor know. 
+After the update has completed, reboot the computer. The only time it is necessary to reboot a Linux computer is after the kernel has been upgraded; this is the only way load the new kernel. It is also a good idea to reboot after glibc has been updated. 
+Lab Project 24: 	Network Configuration And Management
+Most network configuration is pretty straightforward. In fact, on many workstations and laptops it can be completely automatic using NetworkManager. However for servers use of automatic network configuration might not be the best choice, especially prior to Fedora 15. It is still possible to manually configure the network and that is what this Lab Project is all about. 
+Hardware
+Start by pinging the computer of your classroom neighbor or the default gateway to verify that the network is working. Use the route –n command to determine the IP address of the gateway router; then ping the gateway router, ping –c2 <ipaddress> to ensure that you currently have network connectivity. The –c2 option specifies the count of ICMP packets to send. If you get a response from the router you can continue with the next step. If you get no response notify the instructor.
+Determine the name of your network interface with the command:
+[root@CentOS65 ~]# ifconfig
+eth0      Link encap:Ethernet  HWaddr 08:00:27:17:83:41  
+          inet addr:192.168.0.151  Bcast:192.168.0.255  Mask:255.255.255.0
+          inet6 addr: fe80::a00:27ff:fe17:8341/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:14337 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:9649 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000 
+          RX bytes:14222290 (13.5 MiB)  TX bytes:751648 (734.0 KiB)
+
+lo        Link encap:Local Loopback  
+          inet addr:127.0.0.1  Mask:255.0.0.0
+          inet6 addr: ::1/128 Scope:Host
+          UP LOOPBACK RUNNING  MTU:16436  Metric:1
+          RX packets:16 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:16 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0 
+          RX bytes:1584 (1.5 KiB)  TX bytes:1584 (1.5 KiB)
+Your results should look similar to the above. The lo device is the local loopback device used for intra-system communications. The example above shows eth0 as the network interface. Your NIC name might be different. Use the correct name for the NIC in your computer for the rest of this lab project. 
+Interface Configuration
+The ethtool program can be used to view and change hardware NIC configuration, however the ability to change configuration items seems to be broken. Run the command ethtool <NIC Name> and look at the output. Be sure to check the settings for speed, duplex and auto-negotiate.
+Note that mii-tool does not support Gb speeds in many earlier versions. It does provide support for Gb speeds starting with Fedora 15 and CentOS 7.
+mii-tool <NIC Name>
+You can normally use ethtool to change the settings. However that has not been working in recent releases and I suspect a bug in the code or that NetworkManager prevents that. It does seem to work correctly to restart autonegotiation.
+Enter the command ethtool –r <NIC Name> to restart autonegotiation. Ping your student neighbor or the gateway to ensure that the network is working correctly.
+You can also use the nm-tool command to view the current NIC settings in some earlier versions of Fedora but nm-tool is no longer available with Fedora 20. Remember that nm-tool does not offer any options to change the NIC hardware settings.
+Network Configuration and Management
+Use the ifconfig command to display the current networking configuration and NIC statistics for all NICs. If you use ifconfig <NIC Name> the command will only show the information for <NIC Name>. Record the MAC address of <NIC Name> just in case you need it in a later portion of this lab project.
+Use the systemctl command below to verify that the NetworkManager is running.
+[root@student00 network-scripts]# systemctl list-units | grep NetworkManager
+NetworkManager.service  loaded active running Network Manager
+
+In earlier versions of Fedora that do not use NetworkManager or systemd, the chkconfig command can be used to determine which runlevels have networking turned on.
+
+[root@instructor ~]# chkconfig --list network
+network         0:off   1:off   2:on   3:on   4:on   5:on   6:off
+
+Use the command ifconfig to check the current status of the network. This command will show you information about which interfaces are configured and which are running. 
+Ping the Gateway router to ensure that you currently have network connectivity. The –c2 option specifies the number (Count) of ICMP packets to send. If you get a response from the router you can continue with the next step.
+Stop the network interface with the command ifdown <NIC Name> and then ping the router again to verify that connectivity is down. Use the ifup <NIC Name> command to restart the NIC.
+Ensure that the network interface is up and you have network connectivity. 
+Configuring NTP
+The NTP Daemon is normally synchronized with the Fedora pool of NTP servers using the default configuration. This could have been configured during the post-installation configuration, but we will do it here. 
+Use the ntpstat command to determine the current status of NTP synchronization.
+
+[root@instructor /]# ntpstat
+synchronised to NTP server (69.65.40.29) at stratum 3 
+   time correct to within 97 ms
+   polling server every 1024 s
+
+This tells us that we are synchronized to an external server at stratum 3. 
+Use vi to look at the /etc/ntp.conf file on about line 31 to see that the internal dummy server is stratum 10, so the NTP client becomes stratum 11 if no external servers can be contacted.
+Now add the following line to the /etc/ntp.conf file before the set of fedora pool commands, around line 19. Use the IP address supplied by the instructor.
+server <IP Address provided by instructor> prefer iburst
+This specifies the local NTP server on the instructor's machine. 
+Issue the service ntpd restart command to restart the NTP service. Use the ntpstat command to verify the eventual synchronization of the client. This may take from a few seconds to a minute or so to occur.
+You should see results that look like this:
+[root@instructor ~]# ntpstat
+synchronised to NTP server (192.168.25.1) at stratum 4 
+   time correct to within 137 ms
+   polling server every 64 s
+
+Notice that using the instructor's NTP server synchronizes at stratum 4 while synchronizing to the Fedora pool machines results in synchronization at stratum 3. This is because the instructor machine synchronizes with the Fedora pool servers and adds an additional layer between your computer and the pool servers.
+Each student machine can be used as an NTP server at this point. The ntp.conf file needs to be configured to allow that. It is also necessary to configure the firewall (IPTABLES) to allow inbound UDP packets on port 123.
+First, on the server, uncomment the following “restrict” line to be less restrictive of hosts on the local network.
+# Hosts on local network are less restricted.
+restrict <Network IP> mask 255.255.255.0 nomodify notrap
+
+Be sure to use the IP network for the lab such as 192.168.1.0. If you have a question about that ask the instructor.
+The server to which you will be synchronizing must be configured in IPTABLES with the command below. Note that the server should continue to synchronize with the Fedora servers.
+iptables -t filter -I INPUT 1 -p udp --dport 123 -j ACCEPT
+This the NTP UDP packets from being blocked. Note that this rule has been inserted in the first position of the chain so we don't have to deal with stateful connections – yet.
+Now change the IP address in the following line of the client to that of the new server, your student partner.
+server <IP Address provided by student partner> prefer iburst
+Restart the NTP service on both machines. Note that it may take a few moments to sync to this new server. Use the ntpstat command to determine which server your computer is synced with.
+When your computer has synchronized with the NTP server, whichever one you are using, you can set the system hardware clock from the system (OS) time use the following command.
+/sbin/hwclock --systohc
+This command can be added as a cron job or a script in cron.daily to keep the hardware clock synced with the system time. This reduces the amount of time required to sync the clock using NTP after a reboot. 
+Configuring the /etc/hosts file
+You will have to work with a lab partner or the instructor to complete this portion of the Lab Project. Obtain the IP Address for your lab partner's computer. You can add an entry for that computer to the /etc/hosts file to make it easier to connect. For example the following line would associate the hostname “student02” with the ip address “192.168.2.15”.
+192.168.2.15	student02
+
+Ping your partner's computer by IP Address and then by hostname to ensure that the hosts file entry is correct.
+Using SSH
+Work with your lab partner for this portion of the Lab Project.
+If it is not already started, start the SSH Server. This will allow other hosts to connect to yours using SSH. Check the current status of SSH with the command:
+service sshd status
+If the SSHD is not active, start it with one of the commands below.
+service sshd start
+or
+systemctl start sshd.service
+
+Use SSH to connect to your lab partner's computer as root. 
+ssh studentXX
+The first time you connect to a remote host using SSH, a message will be displayed indicating that the authenticity of the remote host cannot be established. You must type yes and press the Enter key to continue with the connection. Your passwords should be the same so enter the password when requested.
+Note that if you are logged in as the user “student” and you wish to SSH to another host as root or any other user, you can use the command below.
+ssh user@hostname
+While you are logged into your partner's computer, verify the hostname and then use the exit command to terminate the connection.
+Creating Public/Private Key Pairs
+Public/Private Key Pairs (PPKP) provide secure SSH communication without the need for using a password. PPKPs can be used for many purposes including SSH host identification. This can be very useful when using scripts to issue commands to remote hosts via SSH. A PPKP does require a passphrase, however that passphrase must be empty for hosts. 
+Create a PPKP as follows. Press the Enter key for all requested entries.
+
+ssh-keygen
+Generating public/private rsa key pair.                                                                                                            
+Enter file in which to save the key (/root/.ssh/id_rsa):                                                                                           
+Created directory '/root/.ssh'.                                                                                                                    
+Enter passphrase (empty for no passphrase):                                                                                                        
+Enter same passphrase again:                                                                                                                       
+Your identification has been saved in /root/.ssh/id_rsa.                                                                                           
+Your public key has been saved in /root/.ssh/id_rsa.pub.
+The key fingerprint is:
+33:28:35:f0:95:a6:5b:0e:5c:6e:b0:37:c9:52:68:9a root@test2.both.org
+The key's randomart image is:
++--[ RSA 2048]----+
+|    .  ...       |
+|     o+.=        |
+|     =+X .       |
+|    E.*oO        |
+|    . .OS.       |
+|     .. .o       |
+|                 |
+|                 |
+|                 |
++-----------------+
+
+This produces two keys in the ~/.ssh directory. the private key is id_rsa and the public key is id_rsa.pub.
+Now use the ssh-copy-id command to securely install the public key you just created onto your partner's host. 
+[root@test2 .ssh]# ssh-copy-id root@studentX
+root@studentX's password: 
+Now try logging into the machine, with "ssh 'root@studentX'", and check in:
+
+  ~/.ssh/authorized_keys
+
+to make sure we haven't added extra keys that you weren't expecting.
+
+This step can be performed manually but this is a much faster method. This one command replaces the following steps.
+    1. Use SCP to securely copy the public key to the remote host.
+    2. Login to the remote host.
+    3. Append the public key to the ~/.ssh/authorized_keys file.
+    4. Ensure that permissions are correctly set on the ~/.ssh directory.
+    5. Ensure that permissions are correctly set on the ~/.ssh/authorized_keys file.
+    6. Logout of the remote host.
+In some cases the manual procedure does not work. If you perform the manual procedure unsuccessfully, you can delete everything pertaining to the key you are trying to activate from the ~/.ssh directory of the remote host and use the ssh-copy-id command. 
+
+If you have not already done so, login to your partner's host and verify that the above procedure has been successful.
+ssh root@studentX
+Enter the exit command to logout from the remote host.
+Lab Project 25:	Security
+There are many aspects to security. In this lab project you will have an opportunity to examine some of the most common methods for enhancing security on a Linux computer.
+Configuring IPTABLES
+The IPTABLES service is the standard Linux firewall. The default configuration is to reject all access except for SSH. This is a good basic starting point. You will make a few additions to the IPTables rules to allow some additional services access. Since we are not using these services in this class, the instructor will have to check your work.
+You will not edit the /etc/sysconfig/iptables file directly; you will use the CLI to insert new rules and to save them. Note that all additions to iptables rules issued from the command line take effect immediately while adding rules to the iptables file requires a restart of the iptables service leaving the computer momentarily vulnerable. You could stop and restart the network but that interrupts the network service. 
+You have seen above one command to insert a rule in an IPTables chain. That was a simple example. It did not utilize connection tracking so each packet has to be filtered through the rules. Delete the rule you entered above. Remember that it has not been saved so is not yet permanent.
+iptables -t filter -D INPUT 1 
+Now add a rule to the filter table input chain to accept the first UDP packet of the connection, that is to create a new connection, on the NTP port. This rule needs to be added after the state RELATED,ESTABLISHED line which should be line 1 in the INPUT chain. The following rule should be entered all on one line.
+iptables -t filter -I INPUT 2 -p udp -m state --state NEW -m udp --dport 123 -j ACCEPT
+After that first packet is accepted, the connection is tracked and any further packets relating to that connection are allowed when they hit the following rule.
+Now add rules using the same command syntax to allow stateful access to http (port 80) and smtp (port25).
+Save these new rules so that they survive a reboot. You could use the old service command as shown below or you can use the iptables-save command, which has been around for a while but only saves directly to /etc/sysconfig/iptables.
+service iptables save
+Use the iptables-save command and redirect the output to the IPTables configuration file as shown below.
+iptables-save > /etc/sysconfig/iptables
+The iptables-save command is more flexible than the older method because the current rule set can be saved to any file and restored with the iptables-restore command in one of the forms shown below. 
+cat /path/to/file/iptables | iptables-restore
+iptables-restore < /path/to/file/iptables
+sudo
+Using the sudo command to provide legitimate access to specific privileged commands can reduce the system administrator's workload while maintaining security and providing a log of the users' actions by ID and command. 
+You will now give the user student sudo access to a single command. Login as the user student, and try the following command.
+[student@testvm3 ~]$ mii-tool <NIC Name>
+SIOCGMIIPHY on '<NIC Name>' failed: Operation not permitted
+
+Now use the visudo command to add the following line to the bottom of /etc/sudoers.
+student ALL=/sbin/mii-tool
+This line gives the student user access to use only this one privileged command. 
+Logout as student and login again. This is required to activate student's sudo privileges. Run the  command below to test the ability of the user student to execute the mii-tool command.
+[student@testvm3 ~]$ sudo mii-tool <NIC Name>
+
+We trust you have received the usual lecture from the local System
+Administrator. It usually boils down to these three things:
+
+    #1) Respect the privacy of others.
+    #2) Think before you type.
+    #3) With great power comes great responsibility.
+
+[sudo] password for student: 
+<NIC Name>: no autonegotiation, 100baseTx-FD, link ok
+
+Note that the first time a user uses sudo they get a little on-screen lecture. The sysadmin should always give a stern lecture to users with sudo privileges. ☺
+The user must enter their own password and the command is executed. Notice that if you execute the same command or any other allowed command within a 5 minutes, it is not necessary to reenter your password. This expiration time is configurable.
+Now try another privileged command. The hwclock command sets the hardware clock to the time currently maintained by the system clock or vice-versa. In this case the student user will try to set the hardware clock using the current value of the syatem clock.
+[student@testvm3 ~]$ hwclock --systohc
+Sorry, only the superuser can change the Hardware Clock.
+
+This command fails because the user student has only been given privileges to a single command.
+Restrict SSH Remote Root Login
+Work with your neighbor in the lab on this section.
+Login to  your neighbor's computer as root via SSH. You should be able to to this. Remember that your passwords are the same. After confirming that you have logged into your neighbor's computer, logout again.
+Now both of you should edit the etc/ssh/sshd_config file and change the following line:
+#PermitRootLogin yes
+To:
+PermitRootLogin no
+And run the service sshd restart command to enable the change.
+Now try to login to your neighbor's computer again as root. 
+ssh root@<ip address for your neighbor's computer>
+You should receive a “Permission denied” error. Also be sure to verify that you can login to your neighbor's computer as user student.
+ssh <ip address for your neighbor's computer>
+Change this back and revert to allowing remote root login on SSH and test to ensure that your neighbor can again access your computer and you can login to theirs.
+Checking for Rootkits
+There are two good programs that can be used to scan your system for rootkits.
+Install the chkrootkit  and rkhunter RPMs.
+yum -y install chkrootkit rkhunter
+Run the chkrootkit command. You should get a long list of tests as they are run. Do you get any anomalous output from chkrootkit? You should not.
+I think that the RootKit Hunter program is a better and more complete program. It is more flexible because it can update the signature files without upgrading the entire program. It also checks for changes to certain system executable files that are frequently targeted by crackers.
+Before running RootKit Hunter the first time, update the signature files.
+[root@testvm3 sbin]# rkhunter --update
+[ Rootkit Hunter version 1.4.2 ]
+
+Checking rkhunter data files...
+  Checking file mirrors.dat                                  [ No update ]
+  Checking file programs_bad.dat                             [ No update ]
+  Checking file backdoorports.dat                            [ No update ]
+  Checking file suspscan.dat                                 [ Updated ]
+  Checking file i18n/cn                                      [ No update ]
+  Checking file i18n/de                                      [ Updated ]
+  Checking file i18n/en                                      [ No update ]
+  Checking file i18n/tr                                      [ Updated ]
+  Checking file i18n/tr.utf8                                 [ Updated ]
+  Checking file i18n/zh                                      [ Updated ]
+  Checking file i18n/zh.utf8                                 [ Updated ]
+
+Create the initial database of critical files.
+[root@voyager ~]# rkhunter --propupd
+[ Rootkit Hunter version 1.4.2 ]
+File updated: searched for 172 files, found 133
+
+Now run the command to check for rootkits. The --sk option skips the normal pause between the different tests. The -c option tells rkhunter to check for rootkits.
+[root@testvm3 sbin]# rkhunter -c --sk
+
+This program also displays a long list of tests and their results as it runs, along with a nice summary at the end.
+Note that the installation RPM for RootKit Hunter sets up a daily cron job with a script in /etc/cron.daily. The script performs this check every morning at about 3AM. If a problem is detected an email message is sent to root. If no problems are detected no email or any other indication that the rkhunter program was even run is provided. Unix tenet “Silence is golden.”
+Lab Project 26:	Problem Solving
+System Rescue
+There are times when the only recovery option for a system is “System Rescue” mode. This entails booting to a Rescue CD or to an installation CD/DVD. 
+    1. Insert the installation DVD in the DVD drive.
+    2. Reboot your computer. 
+    3. When the RHEL installation splash screen is displayed, use the down arrow key to select Rescue installed system and press the Enter key.
+    4. Select English for the Language and Keyboard.
+    5. Do not start the network interfaces. 
+    6. On the Rescue menu press the Continue button.
+    7. You should get a text window that says, “Your system has been mounted under /mnt/sysimage.” Select the OK button and press the Enter key.
+At this point you have entered Rescue mode. You can edit files, such as /etc/fstab; just remember that the true path here is /mnt/sysimage/etc. You can also chroot to make this environment just like running as if you had booted direct from the hard drive.
+    1. cd /mnt/sysimage
+    2. Run the pwd command.
+    3. Run the command chroot /mnt/sysimage.
+    4. Now run pwd again.
+To exit chroot mode type exit. Then type exit again to reboot the computer.
+Now lets create a situation for which you must use Rescue mode to recover from a boot problem. Start by overwriting part of the boot record so that the computer will not boot. We will use a very dangerous command for this, dd. This command is nicknamed “Disk Destroyer” because incorrect usage can destroy the entire contents of your disk, or at least enough to make it totally unrecoverable. It is also a very good illustration of the fact that everything is a file; in this case you will treat your hard drive as a file.
+First back up the boot sector just in case.
+dd if=/dev/sda of=/tmp/bootsector.bak bs=512 count=1
+
+Verify that the boot sector has been backed up. Now destroy the beginning of the boot sector.
+dd if=/dev/zero of=/dev/sda bs=255 count=1
+This command writes 255 bytes of data (all zeros) to the beginning of /dev/sda, your hard drive. If too much data is written it would also destroy your partition table which would create a much more difficult exercise than is intended.
+Now reboot your  computer. 
+Proceed through the Rescue boot and when it is complete use the command grub-install /dev/sda to attempt to reinstall GRUB, including the boot record. It fails with an error message that /sbin/grub cannot be found. This shows that grub and many other commands are not available in the default rescue environment. We must use a chroot’ed environment to make these commands available.
+Use the following commands to enter chroot’ed mode.
+cd /mnt/sysimage
+chroot /mnt/sysimage
+
+Now we can reenter the grub-install /dev/sda command to reinstall GRUB and the boot record.
+exit;exit to reboot.
+

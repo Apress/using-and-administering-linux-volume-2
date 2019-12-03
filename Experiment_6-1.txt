@@ -1,0 +1,21 @@
+Team 1	Apr 3 
+Leader  Virginia Jones  vjones88@example.com	
+Frank Brown  FBrown398@example.com	
+Cindy Williams  cinwill@example.com	
+Marge smith   msmith21@example.com 
+ [Fred Mack]   edd@example.com	
+
+Team 2	March 14
+leader  Alice Wonder  Wonder1@example.com	
+John broth  bros34@example.com	
+Ray Clarkson  Ray.Clarks@example.com	
+Kim West    kimwest@example.com	
+[JoAnne Blank]  jblank@example.com	
+
+Team 3	Apr 1 
+Leader  Steve Jones  sjones23876@example.com	
+Bullwinkle Moose bmoose@example.com	
+Rocket Squirrel RJSquirrel@example.com	
+Julie Lisbon  julielisbon234@example.com	
+[Mary Lastware) mary@example.com
+
